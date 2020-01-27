@@ -16,28 +16,35 @@
 
 */
 
-const pkg = require('./package')
-console.log('ENV', process.env.NODE_ENV)
+const info = {
+  title: '부시로드 성우 정보',
+  description: '부시로드 미디어 프로젝트들의 성우 정보를 정리한 사이트입니다.'
+}
 
 module.exports = {
   mode: 'universal',
   router: {
     base: '/',
-    linkExactActiveClass: 'active'
+    linkExactActiveClass: 'active',
+    middleware: ['ssr-cookie']
   },
   /*
   ** Headers of the page
   */
   head: {
-    title: 'Nuxt Argon Dashboard PRO',
+    title: info.title,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Nuxt Argon Dashboard PRO - Premium Nuxt.js & Bootstrap 4 Dashboard' }
+      { hid: 'description', name: 'description', content: info.description },
+      { hid: 'og:title', property: 'og:title', content: info.title },
+      { hid: 'og:description', property: 'og:description', content: info.description },
+      { hid: 'og:site_name', property: 'og:site_name', content: info.title },
+      { hid: 'og:type', property: 'og:type', content: 'website' }
     ],
     link: [
-      { rel: 'icon', type: 'image/png', href: 'favicon.png' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'},
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Noto+Sans+JP:300,400,700|Noto+Sans+KR:300,400,700|Open+Sans:300,400,600,700&display=swap&subset=japanese,korean'},
       { rel: 'stylesheet', href: 'https://use.fontawesome.com/releases/v5.6.3/css/all.css', integrity: "sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/", crossorigin: "anonymous"}
     ]
   },
@@ -60,8 +67,12 @@ module.exports = {
   */
   plugins: [
     '~/plugins/dashboard/dashboard-plugin',
+    '~/node_modules/vanilla-back-to-top',
+    '~/plugins/dashboard/tinymce',
     {src: '~/plugins/dashboard/full-calendar', ssr: false },
     {src: '~/plugins/dashboard/world-map', ssr: false },
+    {src: '~/plugins/dashboard/aplayer', ssr: false },
+    {src: '~/plugins/dashboard/videoplayer', ssr: false }
   ],
 
   /*
@@ -70,7 +81,9 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
+    ['@nuxtjs/google-analytics', {
+      id: 'UA-148921044-1'
+    }]
   ],
   /*
   ** Axios module configuration
@@ -104,5 +117,7 @@ module.exports = {
         ]
       ]
     }
-  }
+  },
+  serverMiddleware: [ '~/api' ],
+  server: { port: (process.env.NODE_ENV !== 'production') ? 6000 : 3000 }
 }
