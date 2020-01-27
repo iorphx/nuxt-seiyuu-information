@@ -1,4 +1,4 @@
-# [Nuxt Argon Dashboard PRO](https://github.com/creativetimofficial/ct-nuxt-argon-dashboard-pro) [![version][version-badge]][CHANGELOG] [![license][license-badge]][LICENSE]
+# [Nuxt Argon Dashboard PRO](https://github.com/creativetimofficial/ct-nuxt-argon-dashboard-pro)
 
 
 ## Documentation
