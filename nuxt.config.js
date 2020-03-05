@@ -1,4 +1,3 @@
-
 /*!
 
 =========================================================
@@ -15,6 +14,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+require('dotenv').config()
 
 const info = {
   title: '부시로드 성우 정보',
@@ -37,10 +37,11 @@ module.exports = {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: info.description },
-      { hid: 'og:title', property: 'og:title', content: info.title },
-      { hid: 'og:description', property: 'og:description', content: info.description },
-      { hid: 'og:site_name', property: 'og:site_name', content: info.title },
-      { hid: 'og:type', property: 'og:type', content: 'website' }
+      { hid: 'og:title', name: 'og:title', content: info.title },
+      { hid: 'og:description', name: 'og:description', content: info.description },
+      { hid: 'og:site_name', name: 'og:site_name', content: info.title },
+      { hid: 'og:image', name: 'og:image', content: 'https://bushiroad.seiyuus.com/img/brand/logo-gray.png' },
+      { hid: 'og:type', name: 'og:type', content: 'website' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -68,11 +69,8 @@ module.exports = {
   plugins: [
     '~/plugins/dashboard/dashboard-plugin',
     '~/node_modules/vanilla-back-to-top',
-    '~/plugins/dashboard/tinymce',
     {src: '~/plugins/dashboard/full-calendar', ssr: false },
-    {src: '~/plugins/dashboard/world-map', ssr: false },
-    {src: '~/plugins/dashboard/aplayer', ssr: false },
-    {src: '~/plugins/dashboard/videoplayer', ssr: false }
+    {src: '~/plugins/dashboard/no-ssr-plugins', ssr: false }
   ],
 
   /*
@@ -90,6 +88,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
+    proxy: true
   },
 
   /*
@@ -103,7 +102,10 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
-
+    },
+    filenames: {  
+      app: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js',  
+      chunk: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js' 
     },
     extractCSS: process.env.NODE_ENV === 'production',
     babel: {

@@ -1,6 +1,6 @@
 <template>
   <validation-provider :rules="rules" :name="name" v-bind="$attrs" v-slot="{errors, valid, invalid, validated}">
-    <div class="form-group">
+    <div class="form-group" :class="formGroupClasses">
       <slot name="label">
         <label v-if="label" :class="labelClasses">
           {{label}}
@@ -95,6 +95,10 @@
       inputGroupClasses: {
         type: String,
         description: "Input group css classes"
+      },
+      formGroupClasses: {
+        type: String,
+        description: "Form group css classes"
       },
       value: {
         type: [String, Number],

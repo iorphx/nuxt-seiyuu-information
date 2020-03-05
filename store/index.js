@@ -23,7 +23,7 @@ export const actions = {
   async signin({ commit }, { email, password }) {
     if (!email || !password) throw new Error('이메일과 비밀번호를 입력해주세요.')
     try {
-      const { data } = await this.$axios.$post('/api/signin', { email, password })
+      const data = await this.$axios.$post('/api/signin', { email, password })
       commit('SIGNIN', data)
     } catch (error) {
       throw new Error('이메일 혹은 비밀번호가 일치하지 않습니다.')
@@ -32,7 +32,7 @@ export const actions = {
   async register ({ commit }, { email, password, username, role }) {
     if (!email || !password || !username) throw new Error('모든 필드를 입력해주세요.')
     try {
-      const { data } = await this.$axios.$post('/api/register', { email, password, username, role })
+      const data = await this.$axios.$post('/api/register', { email, password, username, role })
       commit('SET_USER', data)
     } catch (error) {
       switch (error.response.status || 500) {
@@ -42,13 +42,13 @@ export const actions = {
     }
   },
   async signout ({ commit }) {
-    const { data } = await this.$axios.$post('/api/signout')
+    const data = await this.$axios.$post('/api/signout')
     if (data.ok) commit('SIGNOUT')
   },
   async reset ({ commit }, { token, password }) {
     if (!password) throw new Error('비밀번호를 입력해주세요.')
     try {
-      const { data } = await this.$axios.$post('/api/reset/' + token, { password })
+      const data = await this.$axios.$post('/api/reset/' + token, { password })
       commit('SET_USER', data)
     } catch (error) {
       switch (error.response.status || 500) {

@@ -14,7 +14,7 @@
 
     <input
       type="text"
-      placeholder="Add new tag"
+      placeholder="태그 추가"
       class="form-control"
       v-model="inputValue"
       ref="saveTagInput"

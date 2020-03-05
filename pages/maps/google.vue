@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-  import { API_KEY } from '@/util/API_KEY';
+  import { API_KEY } from './API_KEY';
 
   export default {
     layout: 'DashboardLayout',

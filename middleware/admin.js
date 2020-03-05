@@ -4,7 +4,7 @@ export default function ({ store, error }) {
       message: '권한이 없습니다.',
       statusCode: 401
     })
-  } else if (store.state.authUser.admin === undefined) {
+  } else if (store.state.authUser.role !== 'admin') {
     error({
       message: '권한이 없습니다.',
       statusCode: 401

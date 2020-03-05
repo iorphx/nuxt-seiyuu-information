@@ -8,14 +8,16 @@ import VeeValidate from 'vee-validate';
 import SideBar from '~/components/argon-core/SidebarPlugin';
 import Vue from 'vue';
 // element ui language configuration
-import lang from 'element-ui/lib/locale/lang/en';
+import lang from 'element-ui/lib/locale/lang/ko';
 import locale from 'element-ui/lib/locale';
 import './globalDirectives'
 import './globalComponents'
 import { extend } from 'vee-validate';
 import * as rules from 'vee-validate/dist/rules';
-import { messages } from 'vee-validate/dist/locale/en.json';
+import { messages } from 'vee-validate/dist/locale/ko.json';
 import { configure } from 'vee-validate';
+import VueLazyload from "vue-lazyload";
+import VueAnime from 'vue-animejs';
 
 Object.keys(rules).forEach(rule => {
   extend(rule, {
@@ -35,3 +37,9 @@ configure({
     dirty: ['is-dirty', 'is-dirty'], // multiple classes per flag!
   }
 });
+Vue.use(VueLazyload, {
+  loading: '/loading.svg',
+  error: '/error.png',
+  lazyComponent: true
+});
+Vue.use(VueAnime);

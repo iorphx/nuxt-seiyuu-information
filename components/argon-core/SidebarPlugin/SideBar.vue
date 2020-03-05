@@ -1,46 +1,45 @@
 <template>
-  <div class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white"
+  <div class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white scrollbar-inner"
        @mouseenter="$sidebar.onMouseEnter()"
        @mouseleave="$sidebar.onMouseLeave()"
-       :data="backgroundColor">
-    <div class="scrollbar-inner" ref="sidebarScrollArea">
-      <div class="sidenav-header d-flex align-items-center">
-        <a class="navbar-brand" href="#">
-          <img :src="logo" class="navbar-brand-img" alt="Sidebar logo">
-        </a>
-        <div class="ml-auto">
-          <!-- Sidenav toggler -->
-          <div class="sidenav-toggler d-none d-xl-block"
-               :class="{'active': !$sidebar.isMinimized }"
-               @click="minimizeSidebar">
-            <div class="sidenav-toggler-inner">
-              <i class="sidenav-toggler-line"></i>
-              <i class="sidenav-toggler-line"></i>
-              <i class="sidenav-toggler-line"></i>
-            </div>
+       :data="backgroundColor"
+       ref="sidebarScrollArea">
+    <div class="sidenav-header d-flex align-items-center">
+      <nuxt-link class="navbar-brand" to="/">
+        <img :src="logo" class="navbar-brand-img" alt="Sidebar logo">
+      </nuxt-link>
+       <div class="ml-auto">
+        <!-- Sidenav toggler -->
+        <div class="sidenav-toggler d-none d-xl-block"
+             :class="{'active': !$sidebar.isMinimized }"
+             @click="minimizeSidebar">
+          <div class="sidenav-toggler-inner">
+            <i class="sidenav-toggler-line"></i>
+            <i class="sidenav-toggler-line"></i>
+            <i class="sidenav-toggler-line"></i>
           </div>
         </div>
       </div>
-      <slot></slot>
-      <div class="navbar-inner">
-        <ul class="navbar-nav">
-          <slot name="links">
+    </div>
+    <slot></slot>
+    <div class="navbar-inner">
+      <ul class="navbar-nav">
+        <slot name="links">
+          <sidebar-item
+            v-for="(link, index) in sidebarLinks"
+            :key="link.name + index"
+            :link="link"
+          >
             <sidebar-item
-              v-for="(link, index) in sidebarLinks"
-              :key="link.name + index"
-              :link="link"
+              v-for="(subLink, index) in link.children"
+              :key="subLink.name + index"
+              :link="subLink"
             >
-              <sidebar-item
-                v-for="(subLink, index) in link.children"
-                :key="subLink.name + index"
-                :link="subLink"
-              >
-              </sidebar-item>
             </sidebar-item>
-          </slot>
-        </ul>
-        <slot name="links-after"></slot>
-      </div>
+          </sidebar-item>
+        </slot>
+      </ul>
+      <slot name="links-after"></slot>
     </div>
   </div>
 </template>
