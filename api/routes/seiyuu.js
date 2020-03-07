@@ -75,7 +75,7 @@ router.patch('/seiyuu/special/:id', role('admin' || 'editor'), SeiyuuUploadSpeci
   if (req.file) {
     oldImage = dt.members[req.body.memberIndex].image
     dt.members[req.body.memberIndex].image = `/img/seiyuu/special/${req.file.filename}`
-  } else if (req.body.delete) {
+  } else if (req.body.delete && req.body.delete !== 'true') {
     oldImage = req.body.delete
   }
   SeiyuuSpecial.findByIdAndUpdate(req.params.id, {$set: dt}, {new: true, upsert: true}, (err, data) => {

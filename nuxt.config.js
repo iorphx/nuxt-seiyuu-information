@@ -95,6 +95,7 @@ module.exports = {
   ** Build configuration
   */
   build: {
+    //analyze: (process.env.NODE_ENV !== 'production') ? false : true,
     transpile: [
       'vee-validate/dist/rules'
     ],
@@ -102,6 +103,7 @@ module.exports = {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
+      if (ctx && ctx.isClient) config.optimization.splitChunks.maxSize = 51200
     },
     filenames: {  
       app: ({ isDev }) => isDev ? '[name].[hash].js' : '[chunkhash].js',  

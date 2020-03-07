@@ -21,10 +21,8 @@
             <sidebar-item :link="{ name: 'BanG Dream!', path: '/seiyuu/sp/bandori' }"/>
             <sidebar-item :link="{ name: '레뷰 스타라이트', path: '/seiyuu/sp/revue' }"/>
             <sidebar-item :link="{ name: 'D4DJ', path: '/seiyuu/sp/d4dj' }"/>
-            <!--
             <sidebar-item :link="{ name: 'Re버스 for you', path: '/seiyuu/sp/rebirth' }"/>
             <sidebar-item :link="{ name: '어썰트 릴리', path: '/seiyuu/sp/assaultlily' }"/>
-            -->
           </sidebar-item>
         </sidebar-item>
 

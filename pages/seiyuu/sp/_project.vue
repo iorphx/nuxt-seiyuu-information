@@ -178,6 +178,7 @@
   import Modal from '~/components/argon-core/Modal.vue'
   import { ColorPicker } from 'element-ui'
   import FileInput from '@/components/argon-core/Inputs/FileInput';
+  import swal from 'sweetalert2'
   
   export default {
     asyncData ({ params, $axios }) {
@@ -306,7 +307,6 @@
         if (this.file && !this.memberIndex) this.memberIndex = this.info[this.groupIndex].members.length - 1
         if (!this.file && this.isDelete) formData.append('delete', this.isDelete)
         formData.append('memberIndex', this.memberIndex)
-        
         this.$axios.$patch(`/api/seiyuu/special/${this.info[this.groupIndex]._id}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
           .then(data => {
             this.$notify({type: 'success', message: '정보를 성공적으로 업데이트 했습니다.', timeout: 3000})
@@ -323,14 +323,14 @@
       },
       saveGroup() {
         if (this.groupModel._id === undefined) {
-          this.$axios.$post(`/api/seiyuu/special/${this.$route.params.project}`, {data: this.groupModel})
+          this.$axios.$post(`/api/seiyuu/special`, {data: this.groupModel})
             .then(data => {
               this.$notify({type: 'success', message: '정보를 성공적으로 추가 했습니다.', timeout: 3000})
               this.reloadData()
               this.showModalGroup = false
             })
             .catch(err => {
-              this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
+              this.$notify({type: 'danger', message: `오류가 발생했습니다.\n${err}`, timeout: 3000})
               this.showModalGroup = false
             })
         } else {
@@ -348,20 +348,35 @@
         }
       },
       deleteSeiyuu() {
-        this.isDelete = this.info[this.groupIndex].members[this.memberIndex].image
+        if (!this.info[this.groupIndex].members[this.memberIndex].image) this.isDelete = 'true'
+        else this.isDelete = this.info[this.groupIndex].members[this.memberIndex].image
         this.info[this.groupIndex].members.splice(this.memberIndex, 1)
         this.saveSeiyuu()
       },
       deleteGroup(groupId) {
-        this.$axios.$delete(`/api/seiyuu/special/${groupId}`)
-          .then(data => {
-            this.$notify({type: 'success', message: '정보를 성공적으로 삭제 했습니다.', timeout: 3000})
-            this.reloadData()
-          })
-          .catch(err => {
-            this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
-            this.showModalGroup = false
-          })
+        swal.fire({
+          icon: 'question',
+          title: '해당 그룹 정보를 삭제하시겠습니까?',
+          showCancelButton: true,
+          customClass: { confirmButton: 'btn btn-danger btn-fill', cancelButton: 'btn btn-default btn-fill' },
+          confirmButtonText: '삭제',
+          cancelButtonText: '취소',
+          buttonsStyling: false,
+          reverseButtons: true
+        })
+        .then((result) => {
+          if (result.value) {
+            this.$axios.$delete(`/api/seiyuu/special/${groupId}`)
+              .then(data => {
+                this.$notify({type: 'success', message: '정보를 성공적으로 삭제 했습니다.', timeout: 3000})
+                this.reloadData()
+              })
+              .catch(err => {
+                this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
+                this.showModalGroup = false
+              })
+          }
+        })
       },
       async reloadData() {
         this.info = await this.$axios.$get(`/api/seiyuu/special/${this.$route.params.project}`)
