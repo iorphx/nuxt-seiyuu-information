@@ -136,7 +136,7 @@
         meta: [
           { name: 'og:title', content: this.info.title, hid: 'og:title' },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' },
-          { name: 'og:image', content: `https://bushiroad.seiyuus.com${this.info.image}`, hid: 'og:url' }
+          { name: 'og:image', content: `https://bushiroad.seiyuus.com${this.info.image}`, hid: 'og:image' }
         ]
       }
     },
