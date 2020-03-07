@@ -97,20 +97,21 @@
           {
             prop: 'method',
             label: '요청방식',
-            minWidth: 100,
+            minWidth: 140,
             sortable: true,
             filters: [
               {text: "POST", value: "POST"},
               {text: "DELETE", value: "DELETE"},
               {text: "PATCH", value: "PATCH"},
-              {text: "PUT", value: "PUT"}
+              {text: "PUT", value: "PUT"},
+              {text: "HEAD", value: "HEAD"}
             ],
             filterMethod: this.filterHandler
           },
           {
             prop: 'statusCode',
             label: '요청코드',
-            minWidth: 100,
+            minWidth: 140,
             sortable: true,
             filters: [
               {text: "200", value: "200"},
@@ -129,13 +130,13 @@
           {
             prop: 'username',
             label: '닉네임',
-            minWidth: 80,
+            minWidth: 110,
             sortable: true
           },
           {
             prop: 'url',
             label: '요청주소',
-            minWidth: 110,
+            minWidth: 140,
             sortable: true
           },
           {
@@ -153,7 +154,7 @@
           {
             prop: 'ip',
             label: 'IP 주소',
-            minWidth: 110,
+            minWidth: 120,
             sortable: true
           },
           {

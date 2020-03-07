@@ -303,8 +303,17 @@
         }
       }
     },
-    mounted() {
-      this.reloadData()
+    async asyncData({$axios}) {
+      let data = await $axios.$get('/api/karaoke/bandori')
+      data.filter(val => {
+        if(val.titleKR === undefined) val.titleKR = ''
+        if(val.tags === undefined) val.tags = []
+        if(val.stype === 'normal') return val.stype = '오리지널'
+        else return val.stype = '커버'
+      })
+      return {
+        tableData: data
+      }
     },
     methods: {
       selectionChange(selectedRows) {

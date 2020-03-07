@@ -19,7 +19,7 @@
     props: {
       initialLabel: {
         type: String,
-        default: 'Select file'
+        default: '파일을 선택해주세요'
       }
     },
     data() {

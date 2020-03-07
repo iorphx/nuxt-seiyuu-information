@@ -82,3 +82,11 @@ dist
 
 # Service worker
 sw.*
+
+# Images
+static/img/discography
+static/img/seiyuu
+static/img/goods
+
+# Etc
+.editorconfig

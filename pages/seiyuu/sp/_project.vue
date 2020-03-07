@@ -2,7 +2,7 @@
   <div>
     <base-header class="pb-6" type="">
       <div class="row align-items-center py-4">
-        <div class="col-12">
+        <div class="col">
           <h6 class="h2 d-inline-block mb-0">{{project}} 성우 정보</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links">
@@ -12,18 +12,44 @@
             </ol>
           </nav>
         </div>
+        <template v-if="$store.state.authUser">
+          <div class="col-auto mr-2" @click.prevent="addGroup" v-if="['editor', 'admin'].includes($store.state.authUser.role)">
+            <i class="fa-users fas pr-2"></i><h4 class="d-inline-flex mb-0">그룹 추가</h4>
+          </div>
+        </template>
       </div>
     </base-header>
     <div class="container-fluid mt--6">
       <div class="row">
-        <div class="col-12" v-for="group in info">
+        <div class="col-12" v-for="(group, groupIndex) in info">
           <card class="text-center">
-            <h5 class="h3 mb-0" slot="header">{{ group.name }}</h5>
+            <template slot="header">
+              <div class="row">
+                <div class="col"><h5 class="h3 mb-0">{{ group.name }}</h5></div>
+                <div class="col-auto" v-if="$store.state.authUser">
+                  <i class="fas fa-user-plus px-1" v-if="['editor', 'admin'].includes($store.state.authUser.role)" @click.prevent="addSeiyuuInit(groupIndex)"></i>
+                  <i class="fas fa-edit px-1" v-if="['editor', 'admin'].includes($store.state.authUser.role)" @click.prevent="editGroup(group, groupIndex)"></i>
+                  <i class="fas fa-trash px-1" v-if="['editor', 'admin'].includes($store.state.authUser.role)" @click.prevent="deleteGroup(group._id)"></i>
+                </div>
+              </div>
+            </template>
             <template>
-              <ul class="list-group list-group-flush list d-inline-flex mx-lg-5 my-4 mx-md-5 mx-5" v-for="member in group.members">
-                <img v-lazy="member.image"
-                     class="rounded-circle img-center img-fluid shadow shadow-lg--hover"
-                     style="width: 200px;">
+              <ul class="list-group list-group-flush list d-inline-flex mx-lg-5 my-4 mx-md-5 mx-5" v-for="(member, memberIndex) in group.members">
+                <lazy-component :key="member.image">
+                  <img :src="member.image"
+                    class="rounded-circle img-center img-fluid shadow shadow-lg--hover"
+                    style="width:200px;height:200px;object-fit:cover;" v-if="member.image">
+                  <img src="https://dummyimage.com/450x450/bbbbbb/ffffff&text=no+image"
+                    class="rounded-circle img-center img-fluid shadow shadow-lg--hover mb-2" style="width:200px;height:200px;object-fit:cover;"
+                    v-else>
+                  <template v-if="$store.state.authUser">
+                    <span v-if="['editor', 'admin'].includes($store.state.authUser.role)" class="badge-circle border-0"
+                          :id="`${group.name}${memberIndex}`"
+                          style="transform: translateY(-1000%) translateX(450%) !important;" @click.prevent="editSeiyuu(member, groupIndex, memberIndex)">
+                      <i class="fas fa-edit"></i>
+                    </span>
+                  </template>
+                </lazy-component>
                 <div class="pt-4 text-center">
                   <h5 class="h3 title">
                     <span class="d-block mb-1">{{ member.name }}</span>
@@ -62,6 +88,83 @@
         </div>
       </div>
     </div>
+    <modal :show.sync="showModal" modal-classes="modal-secondary">
+      <form @submit.prevent="saveSeiyuu">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <img :src="model.image"
+              class="rounded-circle img-center img-fluid shadow shadow-lg--hover mb-2"
+              style="width:200px;height:200px;object-fit:cover;" v-if="!imgPreview && model.image">
+            <img src="https://dummyimage.com/450x450/bbbbbb/ffffff&text=no+image"
+              class="rounded-circle img-center img-fluid shadow shadow-lg--hover mb-2" style="width:200px;height:200px;object-fit:cover;"
+              v-else-if="!imgPreview && !model.image">
+            <img :src="imgPreview"
+              class="rounded-circle img-center img-fluid shadow shadow-lg--hover mb-2"
+              style="width:200px;height:200px;object-fit:cover;" v-else>
+            <file-input @change="filesChange" accept="image/*"></file-input>
+          </div>
+          <div class="col-12">
+            <base-input label="이름"
+              v-model="model.name"
+              input-classes="form-control-alternative">
+            </base-input>
+          </div>
+          <div class="col">
+            <base-input label="캐릭터 이름"
+              v-model="model.character"
+              input-classes="form-control-alternative">
+            </base-input>
+          </div>
+          <div class="col-auto">
+            <base-input label="퍼스널 컬러"
+              input-classes="form-control-alternative" class="text-center">
+              <el-color-picker v-model="model.color"></el-color-picker>
+            </base-input>
+          </div>
+          <div class="col-12">
+            <base-input label="트위터"
+              v-model="model.twitter"
+              input-classes="form-control-alternative">
+            </base-input>
+          </div>
+          <div class="col-12">
+            <base-input label="인스타그램"
+              v-model="model.instagram"
+              input-classes="form-control-alternative">
+            </base-input>
+          </div>
+          <div class="col-12">
+            <base-input label="블로그"
+              v-model="model.blog"
+              input-classes="form-control-alternative">
+            </base-input>
+          </div>
+        </div>
+      </form>
+      <template slot="footer">
+        <button type="submit" class="btn btn-primary" @click="saveSeiyuu">확인</button>
+        <base-button type="danger" @click="deleteSeiyuu">삭제</base-button>
+        <button type="button" class="btn btn-link ml-auto" @click="showModal = false">닫기</button>
+      </template>
+    </modal>
+    
+    <modal :show.sync="showModalGroup" modal-classes="modal-secondary">
+      <form @submit.prevent="saveGroup">
+        <div class="row">
+          <div class="col-12">
+            <base-input label="이름"
+              formGroupClasses="my-0"
+              v-model="groupModel.name"
+              input-classes="form-control-alternative">
+            </base-input>
+          </div>
+        </div>
+      </form>
+      <template slot="footer">
+        <button type="submit" class="btn btn-primary" @click="saveGroup">확인</button>
+        <button type="button" class="btn btn-link ml-auto" @click="showModalGroup = false">닫기</button>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -72,6 +175,9 @@
   // Components
   import BaseHeader from '@/components/argon-core/BaseHeader'
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb'
+  import Modal from '~/components/argon-core/Modal.vue'
+  import { ColorPicker } from 'element-ui'
+  import FileInput from '@/components/argon-core/Inputs/FileInput';
   
   export default {
     asyncData ({ params, $axios }) {
@@ -105,15 +211,161 @@
     },
     components: {
       BaseHeader,
-      RouteBreadCrumb
+      RouteBreadCrumb,
+      [ColorPicker.name]: ColorPicker,
+      Modal,
+      FileInput
+    },
+    data() {
+      return {
+        model: {
+          name: '',
+          character: '',
+          image: '',
+          twitter: '',
+          instagram: '',
+          blog: '',
+          color: ''
+        },
+        groupModel: {
+          name: '',
+          project: this.$route.params.project,
+          members: []
+        },
+        memberIndex: null,
+        groupIndex: null,
+        showModal: false,
+        showModalGroup: false,
+        file: null,
+        imgPreview: null,
+        isDelete: ''
+      }
     },
     methods: {
+      filesChange(files) {
+        this.file = files[0]
+        let reader = new FileReader()
+        reader.onload = () => {
+          this.imgPreview = reader.result
+        }
+        reader.readAsDataURL(files[0])
+      },
       onCopy() {
         this.$notify({type: 'info', message: '해당 맴버의 색상코드를 복사했습니다.', timeout: 3000})
       },
       onError() {
         this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
-      }
+      },
+      editSeiyuu(seiyuu, groupIndex, memberIndex) {
+        this.model = {...seiyuu}
+        this.groupIndex = groupIndex
+        this.memberIndex = memberIndex
+        this.file, this.imgPreview = null
+        if (this.isDelete) this.isDelete = ''
+        this.showModal = true
+      },
+      editGroup(group, groupIndex) {
+        this.groupModel = {...group}
+        this.groupIndex = groupIndex
+        this.showModalGroup = true
+      },
+      addSeiyuuInit(groupIndex) {
+        this.model = {
+          name: '',
+          character: '',
+          image: '',
+          twitter: '',
+          instagram: '',
+          blog: '',
+          color: ''
+        }
+        this.groupIndex = groupIndex
+        this.file = null
+        this.imgPreview = null
+        this.memberIndex = null
+        if (this.isDelete) this.isDelete = ''
+        this.showModal = true
+      },
+      addGroup() {
+        this.groupModel = {
+          name: '',
+          project: this.$route.params.project,
+          members: []
+        }
+        this.showModalGroup = true
+      },
+      saveSeiyuu() {
+        if (this.isDelete) {}
+        else if (this.memberIndex !== null) this.info[this.groupIndex].members[this.memberIndex] = this.model
+        else this.info[this.groupIndex].members.push(this.model)
+        
+        let formData = new FormData()
+        
+        if (this.file) formData.append('seiyuuImage', this.file, this.file.name)
+        formData.append('data', JSON.stringify(this.info[this.groupIndex]))
+        if (this.file && !this.memberIndex) this.memberIndex = this.info[this.groupIndex].members.length - 1
+        if (!this.file && this.isDelete) formData.append('delete', this.isDelete)
+        formData.append('memberIndex', this.memberIndex)
+        
+        this.$axios.$patch(`/api/seiyuu/special/${this.info[this.groupIndex]._id}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+          .then(data => {
+            this.$notify({type: 'success', message: '정보를 성공적으로 업데이트 했습니다.', timeout: 3000})
+            this.isDelete = ''
+            this.showModal = false
+            this.reloadData()
+          })
+          .catch(err => {
+            this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
+            this.isDelete = ''
+            this.showModal = false
+            this.$router.go()
+          })
+      },
+      saveGroup() {
+        if (this.groupModel._id === undefined) {
+          this.$axios.$post(`/api/seiyuu/special/${this.$route.params.project}`, {data: this.groupModel})
+            .then(data => {
+              this.$notify({type: 'success', message: '정보를 성공적으로 추가 했습니다.', timeout: 3000})
+              this.reloadData()
+              this.showModalGroup = false
+            })
+            .catch(err => {
+              this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
+              this.showModalGroup = false
+            })
+        } else {
+          this.$axios.$patch(`/api/seiyuu/special/group/${this.groupModel._id}`, {data: this.groupModel})
+            .then(data => {
+              this.$notify({type: 'success', message: '정보를 성공적으로 수정 했습니다.', timeout: 3000})
+              this.reloadData()
+              this.showModalGroup = false
+            })
+            .catch(err => {
+              console.log(err)
+              this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
+              this.showModalGroup = false
+            })
+        }
+      },
+      deleteSeiyuu() {
+        this.isDelete = this.info[this.groupIndex].members[this.memberIndex].image
+        this.info[this.groupIndex].members.splice(this.memberIndex, 1)
+        this.saveSeiyuu()
+      },
+      deleteGroup(groupId) {
+        this.$axios.$delete(`/api/seiyuu/special/${groupId}`)
+          .then(data => {
+            this.$notify({type: 'success', message: '정보를 성공적으로 삭제 했습니다.', timeout: 3000})
+            this.reloadData()
+          })
+          .catch(err => {
+            this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
+            this.showModalGroup = false
+          })
+      },
+      async reloadData() {
+        this.info = await this.$axios.$get(`/api/seiyuu/special/${this.$route.params.project}`)
+      },
     }
   };
 </script>
