@@ -15,6 +15,7 @@
 
 */
 require('dotenv').config()
+import axios from 'axios'
 
 const info = {
   title: '부시로드 성우 정보',
@@ -81,8 +82,35 @@ module.exports = {
     '@nuxtjs/axios',
     ['@nuxtjs/google-analytics', {
       id: 'UA-148921044-1'
-    }]
+    }],
+    '@nuxtjs/sitemap'
   ],
+  sitemap: {
+    hostname: `https://${process.env.DOMAIN}`,
+    gzip: true,
+    exclude: [
+      '/forgot',
+      '/reset',
+      '/admin/**',
+      '**/edit/**'
+    ],
+    routes: async () => {
+      let routes = []
+      
+      const { discographies } = await axios.get('/api/discography/list')
+      const { goods } = await axios.get('/api/goods/list')
+      const { seiyuus } = await axios.get('/api/seiyuu/list')
+      const { translations } = await axios.get('/api/translation/list')
+      routes = [
+        ...discographies.map(discography => `/discographies/${discography.title}`),
+        ...goods.map(good => `/goods/${good.name}`),
+        ...seiyuus.map(seiyuu => `/seiyuu/${seiyuu.name}`),
+        ...translations.map(translation => `/translation/${translation.title}`),
+        '/karaoke/release/tj', '/karaoke/release/kumyoung', '/karaoke/release/joysound', '/karaoke/release/dam', '/karaoke/release/uga',
+        '/seiyuu/sp/bandori', '/seiyuu/sp/revue', '/seiyuu/sp/d4dj', '/seiyuu/sp/rebirth', '/seiyuu/sp/assaultlily'
+      ]
+    }
+  },
   /*
   ** Axios module configuration
   */

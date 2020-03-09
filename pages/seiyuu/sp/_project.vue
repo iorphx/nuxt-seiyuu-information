@@ -25,7 +25,10 @@
           <card class="text-center">
             <template slot="header">
               <div class="row">
-                <div class="col"><h5 class="h3 mb-0">{{ group.name }}</h5></div>
+                <div class="col">
+                  <span v-if="group.color" :style="{background: group.color}" class="mx-1">&nbsp;</span>
+                  <h3 class="d-inline-block mb-0">{{ group.name }}</h3>
+                </div>
                 <div class="col-auto" v-if="$store.state.authUser">
                   <i class="fas fa-user-plus px-1" v-if="['editor', 'admin'].includes($store.state.authUser.role)" @click.prevent="addSeiyuuInit(groupIndex)"></i>
                   <i class="fas fa-edit px-1" v-if="['editor', 'admin'].includes($store.state.authUser.role)" @click.prevent="editGroup(group, groupIndex)"></i>
@@ -151,11 +154,17 @@
     <modal :show.sync="showModalGroup" modal-classes="modal-secondary">
       <form @submit.prevent="saveGroup">
         <div class="row">
-          <div class="col-12">
+          <div class="col">
             <base-input label="이름"
               formGroupClasses="my-0"
               v-model="groupModel.name"
               input-classes="form-control-alternative">
+            </base-input>
+          </div>
+          <div class="col-auto">
+            <base-input label="그룹 컬러"
+              input-classes="form-control-alternative" class="text-center">
+              <el-color-picker v-model="groupModel.color"></el-color-picker>
             </base-input>
           </div>
         </div>
@@ -230,6 +239,7 @@
         },
         groupModel: {
           name: '',
+          color: '',
           project: this.$route.params.project,
           members: []
         },
@@ -290,6 +300,7 @@
       addGroup() {
         this.groupModel = {
           name: '',
+          color: '',
           project: this.$route.params.project,
           members: []
         }

@@ -36,6 +36,7 @@ const SeiyuuSpecialSchema = new Schema(
       type: String,
       require: true
     },
+    color: String,
     members: {
       type: Array,
       require: true
