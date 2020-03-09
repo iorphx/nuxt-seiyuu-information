@@ -97,10 +97,11 @@ module.exports = {
     routes: async () => {
       let routes = []
       
-      const { discographies } = await axios.get('/api/discography/list')
-      const { goods } = await axios.get('/api/goods/list')
-      const { seiyuus } = await axios.get('/api/seiyuu/list')
-      const { translations } = await axios.get('/api/translation/list')
+      const { discographies } = await axios.get('https://bushiroad.seiyuus.com/api/discography/list')
+      const { goods } = await axios.get('https://bushiroad.seiyuus.com/api/goods/list')
+      const { seiyuus } = await axios.get('https://bushiroad.seiyuus.com/api/seiyuu/list')
+      const { translations } = await axios.get('https://bushiroad.seiyuus.com/api/translation/list')
+      
       routes = [
         ...discographies.map(discography => `/discographies/${discography.title}`),
         ...goods.map(good => `/goods/${good.name}`),
@@ -109,6 +110,8 @@ module.exports = {
         '/karaoke/release/tj', '/karaoke/release/kumyoung', '/karaoke/release/joysound', '/karaoke/release/dam', '/karaoke/release/uga',
         '/seiyuu/sp/bandori', '/seiyuu/sp/revue', '/seiyuu/sp/d4dj', '/seiyuu/sp/rebirth', '/seiyuu/sp/assaultlily'
       ]
+      
+      return routes
     }
   },
   /*
