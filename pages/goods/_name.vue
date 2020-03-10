@@ -95,7 +95,7 @@
       return {
         title: this.goods.name,
         meta: [
-          { name: 'og:title', content: this.goods.name, hid: 'og:title' },
+          { name: 'og:title', content: this.goods.name, hid: 'og:title', template: chunk => `${chunk} - 굿즈 - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' },
           { name: 'og:image', content: `https://bushiroad.seiyuus.com${this.goods.image}`, hid: 'og:image' }
         ]

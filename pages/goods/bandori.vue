@@ -66,7 +66,7 @@
       return {
         title: 'BanG Dream! 굿즈',
         meta: [
-          { name: 'og:title', content: 'BanG Dream! 굿즈', hid: 'og:title' },
+          { name: 'og:title', content: 'BanG Dream! 굿즈', hid: 'og:title', template: chunk => `${chunk} - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' }
         ]
       }

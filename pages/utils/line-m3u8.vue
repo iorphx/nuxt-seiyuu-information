@@ -59,7 +59,7 @@
       return {
         title: 'LINE LIVE M3U8 링크 추출기',
         meta: [
-          { name: 'og:title', content: 'LINE LIVE M3U8 링크 추출기', hid: 'og:title' },
+          { name: 'og:title', content: 'LINE LIVE M3U8 링크 추출기', hid: 'og:title', template: chunk => `${chunk} - 유틸리티 - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' }
         ]
       }

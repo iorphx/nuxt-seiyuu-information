@@ -152,7 +152,7 @@
       return {
         title: this.$route.params.name,
         meta: [
-          { name: 'og:title', content: this.$route.params.name, hid: 'og:title' },
+          { name: 'og:title', content: this.$route.params.name, hid: 'og:title', template: chunk => `${chunk} - 성우 정보 - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' },
           { name: 'og:image', content: `https://bushiroad.seiyuus.com${this.seiyuu.image}`, hid: 'og:image' }
         ]

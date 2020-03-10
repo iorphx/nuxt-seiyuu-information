@@ -87,7 +87,7 @@
       return {
         title: `${this.$route.params.keyword}`,
         meta: [
-          { name: 'og:title', content: `${this.$route.params.keyword}`, hid: 'og:title' },
+          { name: 'og:title', content: `${this.$route.params.keyword}`, hid: 'og:title', template: chunk => `${chunk} - 노래방 번호 검색 - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' }
         ]
       }

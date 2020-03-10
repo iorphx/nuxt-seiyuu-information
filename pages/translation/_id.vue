@@ -70,7 +70,7 @@
       return {
         title: this.article.title,
         meta: [
-          { name: 'og:title', content: this.article.title, hid: 'og:title'},
+          { name: 'og:title', content: this.article.title, hid: 'og:title', template: chunk => `${chunk} - 번역 - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' }
         ]
       }

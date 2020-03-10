@@ -34,6 +34,7 @@ module.exports = {
   */
   head: {
     title: info.title,
+    titleTemplate: '%s - 부시로드 성우 정보',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -87,10 +88,10 @@ module.exports = {
     '@nuxtjs/sitemap'
   ],
   sentry: {
-    dsn: 'https://0f345e38485a4ba295688b2ae3a0ea56@sentry.io/4153740',
-    publishRelease: true,
+    disabled: process.env.NODE_ENV !== 'production',
     config: {
-      //
+      environment: process.env.SENTRY_ENV,
+      disabled: process.env.NODE_ENV !== 'production'
     }
   },
   sitemap: {

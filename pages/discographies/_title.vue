@@ -134,7 +134,7 @@
       return {
         title: this.info.title,
         meta: [
-          { name: 'og:title', content: this.info.title, hid: 'og:title' },
+          { name: 'og:title', content: this.info.title, hid: 'og:title', template: chunk => `${chunk} - 가사/콜 - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' },
           { name: 'og:image', content: `https://bushiroad.seiyuus.com${this.info.image}`, hid: 'og:image' }
         ]
