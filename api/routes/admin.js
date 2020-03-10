@@ -18,7 +18,7 @@ const nodemailerMailgun = nodemailer.createTransport(mailgun(auth))
 import { User, Logs } from '../models'
 import role from '../middleware/role'
 
-router.post('/admin/mail/all', role('admin'), (req, res, next) => {
+router.post('/admin/mail/all', role(['admin']), (req, res, next) => {
   User.find({}, {_id: 0, password: 0, role: 0}, (err, users) => {
     for (let user of users) {
       nodemailerMailgun.sendMail({
@@ -34,7 +34,7 @@ router.post('/admin/mail/all', role('admin'), (req, res, next) => {
   })
 })
 
-router.post('/admin/mail/:id', role('admin'), (req, res, next) => {
+router.post('/admin/mail/:id', role(['admin']), (req, res, next) => {
   User.findById(req.params.id, {_id: 0, password: 0, role: 0}, (err, user) => {
     nodemailerMailgun.sendMail({
       from: {name: '부시로드 성우 정보', address: 'support@seiyuus.com'},
@@ -48,14 +48,14 @@ router.post('/admin/mail/:id', role('admin'), (req, res, next) => {
   })
 })
 
-router.get('/admin/users', role('admin'), (req, res, next) => {
+router.get('/admin/users', role(['admin']), (req, res, next) => {
   User.find({}, (err, users) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(users)
   })
 })
 
-router.get('/admin/user/:id', role('admin'), (req, res, next) => {
+router.get('/admin/user/:id', role(['admin']), (req, res, next) => {
   User.findById(req.params.id, (err, user) => {
     user.password = undefined
     if (err) return res.status(500).json(err)
@@ -63,21 +63,21 @@ router.get('/admin/user/:id', role('admin'), (req, res, next) => {
   })
 })
 
-router.patch('/admin/user/:id', role('admin'), (req, res, next) => {
+router.patch('/admin/user/:id', role(['admin']), (req, res, next) => {
   User.findByIdAndUpdate(req.params.id, {$set: req.body.data}, {new: true, upsert: true}, (err, user) => {
     if (err) return res.status(500).json(err)
     res.status(200).end()
   })
 })
 
-router.delete('/admin/user/:id', role('admin'), (req, res, next) => {
+router.delete('/admin/user/:id', role(['admin']), (req, res, next) => {
   User.findByIdAndDelete(req.params.id, (err, user) => {
     if (err) return res.status(500).json(err)
     res.status(200).end()
   })
 })
 
-router.get('/admin/logs', role('admin'), (req, res, next) => {
+router.get('/admin/logs', role(['admin']), (req, res, next) => {
   Logs.find({}, {_id: 0}, (err, logs) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(logs)

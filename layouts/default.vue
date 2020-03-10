@@ -169,4 +169,8 @@
   * {
     font-family: 'Open Sans', 'Noto Sans KR', 'Noto Sans JP', sans-serif;
   }
+  
+  .sentry-error-embed-wrapper {
+    z-index: 9999 !important;
+  }
 </style>

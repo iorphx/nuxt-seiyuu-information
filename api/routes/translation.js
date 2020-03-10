@@ -25,7 +25,7 @@ router.get('/translation/:id', (req, res, next) => {
   })
 })
 
-router.post('/translation', role('admin' || 'editor'), (req, res, next) => {
+router.post('/translation', role(['admin', 'editor']), (req, res, next) => {
   const translation = new Translation(req.body.data)
   translation.save(err => {
     if (err) res.status(500).json(err)
@@ -33,14 +33,14 @@ router.post('/translation', role('admin' || 'editor'), (req, res, next) => {
   })
 })
 
-router.patch('/translation/:id', role('admin' || 'editor'), (req, res, next) => {
+router.patch('/translation/:id', role(['admin', 'editor']), (req, res, next) => {
   Translation.findByIdAndUpdate(req.params.id, {$set: req.body.data}, {upsert: true, new: true}, (err, data) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(data)
   })
 })
 
-router.delete('/translation/:id', role('admin' || 'editor'), (req, res, next) => {
+router.delete('/translation/:id', role(['admin', 'editor']), (req, res, next) => {
   Translation.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(500).json(err)
     res.status(200).end()

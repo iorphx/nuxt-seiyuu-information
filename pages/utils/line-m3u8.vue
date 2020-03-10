@@ -106,9 +106,15 @@
                 this.m3u8 = m3u8
                 this.playerOptions.sources[0].src = m3u8
               })
-              .catch(err => this.errored = err.message)
+              .catch(err => {
+                this.$sentry.captureException(err)
+                this.errored = err.message
+              })
           })
-          .catch(err => this.errored = err.message)
+          .catch(err => {
+            this.$sentry.captureException(err)
+            this.errored = err.message
+          })
       }
     }
   }

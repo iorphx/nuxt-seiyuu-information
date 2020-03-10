@@ -40,7 +40,7 @@ router.get('/goods/:name', (req, res, next) => {
   })
 })
 
-router.patch('/goods/:id', role('admin' || 'editor'), GoodsUpload.single('goodsImage'), (req, res, next) => {
+router.patch('/goods/:id', role(['admin', 'editor']), GoodsUpload.single('goodsImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   let oldImage
   if (req.file) {
@@ -58,7 +58,7 @@ router.patch('/goods/:id', role('admin' || 'editor'), GoodsUpload.single('goodsI
   })
 })
 
-router.delete('/goods/:id', role('admin' || 'editor'), (req, res, next) => {
+router.delete('/goods/:id', role(['admin', 'editor']), (req, res, next) => {
   Goods.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(500).json(err)
     fs.unlink(`./static${data.image}`, function(error){
@@ -68,7 +68,7 @@ router.delete('/goods/:id', role('admin' || 'editor'), (req, res, next) => {
   })
 })
 
-router.post('/goods', role('admin' || 'editor'), GoodsUpload.single('goodsImage'), (req, res, next) => {
+router.post('/goods', role(['admin', 'editor']), GoodsUpload.single('goodsImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   if (req.file) dt.image = `/img/goods/${req.file.filename}`
   else dt.image = ''

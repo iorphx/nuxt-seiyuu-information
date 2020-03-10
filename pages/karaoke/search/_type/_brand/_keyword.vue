@@ -162,7 +162,7 @@
           this.tableData = data
         })
         .catch(err => {
-          console.log(err)
+          this.$sentry.captureException(err)
         })
     },
     methods: {

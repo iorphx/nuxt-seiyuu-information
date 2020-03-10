@@ -357,9 +357,22 @@
               this.reloadData()
             })
             .catch(err => {
-              console.log(err)
-              this.$notify({type: 'danger', message: '오류가 발생했습니다', timeout: 3000})
               this.showModal = false
+              let sentry = this.$sentry.captureException(err)
+              this.$sentry.showReportDialog({
+                eventId: sentry.eventId,
+                title: '오류가 발생했습니다.',
+                subtitle: '어떤 오류가 발생했는지 알려주세요!',
+                subtitle2: '',
+                labelName: '닉네임',
+                labelEmail: '이메일',
+                labelComments: '어떻게 오류가 발생했나요?',
+                labelClose: '닫기',
+                labelSubmit: '보내기',
+                errorGeneric: '오류 보고서를 제출하는 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+                errorFormEntry: '일부 필드에 내용이 작성되어있지 않습니다. 모든 필드를 채워주신 후 다시 시도해주세요.',
+                successMessage: '피드백이 전송되었습니다. 감사합니다!'
+              })
             })
         } else {
         this.$axios.$put(`/api/karaoke/${uid}`, {data: this.model})
@@ -369,14 +382,27 @@
             this.reloadData()
           })
           .catch(err => {
-            console.log(err)
-            this.$notify({type: 'danger', message: '오류가 발생했습니다', timeout: 3000})
             this.showModal = false
+            let sentry = this.$sentry.captureException(err)
+            this.$sentry.showReportDialog({
+              eventId: sentry.eventId,
+              title: '오류가 발생했습니다.',
+              subtitle: '어떤 오류가 발생했는지 알려주세요!',
+              subtitle2: '',
+              labelName: '닉네임',
+              labelEmail: '이메일',
+              labelComments: '어떻게 오류가 발생했나요?',
+              labelClose: '닫기',
+              labelSubmit: '보내기',
+              errorGeneric: '오류 보고서를 제출하는 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+              errorFormEntry: '일부 필드에 내용이 작성되어있지 않습니다. 모든 필드를 채워주신 후 다시 시도해주세요.',
+              successMessage: '피드백이 전송되었습니다. 감사합니다!'
+            })
           })
         }
       },
       onEdit(row) {
-        this.model = row
+        this.model = {...row}
         if (this.model.stype === '오리지널') this.model.stype = 'normal'
         else this.model.stype = 'anime'
         this.showModal = true
@@ -404,8 +430,22 @@
                 this.$notify({type: 'success', message: '삭제했습니다', timeout: 3000})
               })
               .catch(err => {
-                this.$notify({type: 'danger', message: '오류가 발생했습니다', timeout: 3000})
                 this.showModal = false
+                let sentry = this.$sentry.captureException(err)
+                this.$sentry.showReportDialog({
+                  eventId: sentry.eventId,
+                  title: '오류가 발생했습니다.',
+                  subtitle: '어떤 오류가 발생했는지 알려주세요!',
+                  subtitle2: '',
+                  labelName: '닉네임',
+                  labelEmail: '이메일',
+                  labelComments: '어떻게 오류가 발생했나요?',
+                  labelClose: '닫기',
+                  labelSubmit: '보내기',
+                  errorGeneric: '오류 보고서를 제출하는 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+                  errorFormEntry: '일부 필드에 내용이 작성되어있지 않습니다. 모든 필드를 채워주신 후 다시 시도해주세요.',
+                  successMessage: '피드백이 전송되었습니다. 감사합니다!'
+                })
               })
           }
         })
@@ -438,7 +478,7 @@
             this.tableData = data
           })
           .catch(err => {
-            console.log(err)
+            this.$sentry.captureException(err)
           })
       }
     },

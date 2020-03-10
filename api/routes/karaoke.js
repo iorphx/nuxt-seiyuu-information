@@ -18,19 +18,19 @@ router.get('/karaoke/:project/:title', (req, res, next) => {
   })
 })
 
-router.post('/karaoke', role('admin' || 'editor'), (req, res, next) => {
+router.post('/karaoke', role(['admin', 'editor']), (req, res, next) => {
   const karaoke = new KaraokeSpecial(req.body.data)
   karaoke.save(err => res.sendStatus(err ? 500 : 200))
 })
 
-router.put('/karaoke/:id', role('admin' || 'editor'), (req, res, next) => {
+router.put('/karaoke/:id', role(['admin', 'editor']), (req, res, next) => {
   KaraokeSpecial.findByIdAndUpdate(req.params.id, req.body.data, {upsert:true, new:true}, (err, data) => {
     if (err) return res.status(500).json(err)
     res.status(200).end()
   })
 })
 
-router.delete('/karaoke/:id', role('admin' || 'editor'), (req, res, next) => {
+router.delete('/karaoke/:id', role(['admin', 'editor']), (req, res, next) => {
   KaraokeSpecial.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(500).json(err)
     res.status(200).end()

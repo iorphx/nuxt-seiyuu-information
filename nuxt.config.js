@@ -80,11 +80,19 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/sentry',
     ['@nuxtjs/google-analytics', {
       id: 'UA-148921044-1'
     }],
     '@nuxtjs/sitemap'
   ],
+  sentry: {
+    dsn: 'https://0f345e38485a4ba295688b2ae3a0ea56@sentry.io/4153740',
+    publishRelease: true,
+    config: {
+      //
+    }
+  },
   sitemap: {
     hostname: `https://${process.env.DOMAIN}`,
     gzip: true,
@@ -92,7 +100,9 @@ module.exports = {
       '/forgot',
       '/reset',
       '/admin/**',
-      '**/edit/**'
+      '**/edit/**',
+      '/-maps/**',
+      '/-pages/**'
     ],
     routes: async () => {
       let routes = []

@@ -40,7 +40,7 @@ router.get('/discography/:title' , (req, res, next) => {
   })
 })
 
-router.post('/discography', role('admin' || 'editor'), SongUpload.single('albumImage'), (req, res, next) => {
+router.post('/discography', role(['admin', 'editor']), SongUpload.single('albumImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   if (req.file) dt.image = `/img/discography/${req.file.filename}`
   else dt.image = ''
@@ -51,7 +51,7 @@ router.post('/discography', role('admin' || 'editor'), SongUpload.single('albumI
   })
 })
 
-router.patch('/discography/:id', role('admin' || 'editor'), SongUpload.single('albumImage'), (req, res, next) => {
+router.patch('/discography/:id', role(['admin', 'editor']), SongUpload.single('albumImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   let oldImage
   if (req.file) {
@@ -69,7 +69,7 @@ router.patch('/discography/:id', role('admin' || 'editor'), SongUpload.single('a
   })
 })
 
-router.delete('/discography/:id', role('admin' || 'editor'), (req, res, ㅜㄷㅌㅅ) => {
+router.delete('/discography/:id', role(['admin', 'editor']), (req, res, ㅜㄷㅌㅅ) => {
   Discography.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(500).json(err)
     fs.unlink(`./static${data.image}`, function(error){

@@ -79,6 +79,7 @@
               if (res.status === 200) this.requested = true
             })
             .catch(err => {
+              this.$sentry.captureException(err)
               this.validEmail = ({ message: '존재하지 않는 계정입니다.' })
             })
         } catch (error) {

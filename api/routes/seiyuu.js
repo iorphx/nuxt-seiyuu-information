@@ -51,7 +51,7 @@ router.get('/seiyuu/:name', (req, res, next) => {
   })
 })
 
-router.patch('/seiyuu/:id', role('admin' || 'editor'), SeiyuuUpload.single('profileImage'), (req, res, next) => {
+router.patch('/seiyuu/:id', role(['admin', 'editor']), SeiyuuUpload.single('profileImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   let oldImage
   if (req.file) {
@@ -69,7 +69,7 @@ router.patch('/seiyuu/:id', role('admin' || 'editor'), SeiyuuUpload.single('prof
   })
 })
 
-router.patch('/seiyuu/special/:id', role('admin' || 'editor'), SeiyuuUploadSpecial.single('seiyuuImage'), (req, res, next) => {
+router.patch('/seiyuu/special/:id', role(['admin', 'editor']), SeiyuuUploadSpecial.single('seiyuuImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   let oldImage
   if (req.file) {
@@ -89,14 +89,14 @@ router.patch('/seiyuu/special/:id', role('admin' || 'editor'), SeiyuuUploadSpeci
   })
 })
 
-router.patch('/seiyuu/special/group/:id', role('admin' || 'editor'), (req, res, next) => {
+router.patch('/seiyuu/special/group/:id', role(['admin', 'editor']), (req, res, next) => {
   SeiyuuSpecial.findByIdAndUpdate(req.params.id, {$set: req.body.data}, {new: true, upsert: true}, (err, data) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(data)
   })
 })
 
-router.delete('/seiyuu/:id', role('admin' || 'editor'), (req, res, next) => {
+router.delete('/seiyuu/:id', role(['admin', 'editor']), (req, res, next) => {
   Seiyuu.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(500).json(err)
     fs.unlink(`./static${data.image}`, function(error){
@@ -106,7 +106,7 @@ router.delete('/seiyuu/:id', role('admin' || 'editor'), (req, res, next) => {
   })
 })
 
-router.delete('/seiyuu/special/:id', role('admin' || 'editor'), (req, res, next) => {
+router.delete('/seiyuu/special/:id', role(['admin', 'editor']), (req, res, next) => {
   SeiyuuSpecial.findByIdAndDelete(req.params.id, (err, data) => {
     if (err) return res.status(500).json(err)
     for (let member in data.members) {
@@ -118,7 +118,7 @@ router.delete('/seiyuu/special/:id', role('admin' || 'editor'), (req, res, next)
   })
 })
 
-router.post('/seiyuu', role('admin' || 'editor'), SeiyuuUpload.single('profileImage'), (req, res, next) => {
+router.post('/seiyuu', role(['admin', 'editor']), SeiyuuUpload.single('profileImage'), (req, res, next) => {
   let dt = JSON.parse(req.body.data)
   if (req.file) dt.image = `/img/seiyuu/${req.file.filename}`
   else dt.image = ''
@@ -129,7 +129,7 @@ router.post('/seiyuu', role('admin' || 'editor'), SeiyuuUpload.single('profileIm
   })
 })
 
-router.post('/seiyuu/special', role('admin' || 'editor'), (req, res, next) => {
+router.post('/seiyuu/special', role(['admin', 'editor']), (req, res, next) => {
   const seiyuu = new SeiyuuSpecial(req.body.data)
   seiyuu.save(err => {
     if (err) res.status(500).json(err)
