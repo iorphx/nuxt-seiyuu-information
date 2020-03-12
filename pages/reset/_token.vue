@@ -33,9 +33,9 @@
         <div class="col-lg"></div>
         <div class="col px-5 px-lg-0">
           <form role="form" @submit.prevent="submit">
-            <base-input label="비밀번호" type="password" v-model="password" prependIcon="ni ni-lock-circle-open"
+            <base-input label="비밀번호" type="password" name="비밀번호" v-model="password" prependIcon="ni ni-lock-circle-open"
                         alternative placeholder="비밀번호"></base-input>
-            <base-input label="비밀번호 재확인" type="password" v-model="passwordAgain" prependIcon="ni ni-lock-circle-open"
+            <base-input label="비밀번호 재확인" type="password" name="비밀번호" v-model="passwordAgain" prependIcon="ni ni-lock-circle-open"
                         alternative placeholder="비밀번호"></base-input>
             <div class="text-center">
               <base-button type="primary" class="my-4" @click="submit()">비밀번호 변경</base-button>

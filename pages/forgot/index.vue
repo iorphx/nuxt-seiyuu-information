@@ -3,11 +3,11 @@
     <base-header class="pb-6" type="">
       <div class="row align-items-center py-4">
         <div class="col-12">
-          <h6 class="h2 d-inline-block mb-0">Forgot Password</h6>
+          <h6 class="h2 d-inline-block mb-0">비밀번호 재설정</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links">
-              <li class="breadcrumb-item"><nuxt-link to="/"><i class="fas fa-home mr-2"></i>Home</nuxt-link></li>
-              <li class="breadcrumb-item active" aria-current="page">Forgot Password</li>
+              <li class="breadcrumb-item"><nuxt-link to="/"><i class="fas fa-home mr-2"></i>홈</nuxt-link></li>
+              <li class="breadcrumb-item active" aria-current="page">비밀번호 재설정</li>
             </ol>
           </nav>
         </div>
@@ -29,7 +29,7 @@
         <div class="col px-5 px-lg-0">
           <form role="form" @submit.prevent="forgot">
             <base-input label="이메일" placeholder="이메일" type="email" v-model="email"
-                        prependIcon="ni ni-email-83" alternative></base-input>
+                        prependIcon="ni ni-email-83" name="이메일" alternative></base-input>
             <div class="text-center">
               <base-button type="primary" class="my-4" @click="forgot()">확인</base-button>
             </div>
