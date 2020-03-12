@@ -26,7 +26,10 @@
             <template slot="header">
               <div class="row">
                 <div class="col">
-                  <span v-if="group.color" :style="{background: group.color}" class="mx-1">&nbsp;</span>
+                  <el-tooltip content="그룹 컬러" placement="bottom" v-if="group.color">
+                    <span :style="{background: group.color}" class="px-2 rounded-circle mx-1"
+                      v-clipboard:copy="group.color" v-clipboard:success="onCopy" v-clipboard:error="onError">&nbsp;</span>
+                  </el-tooltip>
                   <h3 class="d-inline-block mb-0">{{ group.name }}</h3>
                 </div>
                 <div class="col-auto" v-if="$store.state.authUser">
@@ -37,55 +40,60 @@
               </div>
             </template>
             <template>
-              <ul class="list-group list-group-flush list d-inline-flex mx-lg-5 my-4 mx-md-5 mx-5" v-for="(member, memberIndex) in group.members">
-                <lazy-component :key="member.image">
-                  <img :src="member.image"
-                    class="rounded-circle img-center img-fluid shadow shadow-lg--hover"
-                    style="width:200px;height:200px;object-fit:cover;" v-if="member.image">
-                  <img src="https://dummyimage.com/450x450/bbbbbb/ffffff&text=no+image"
-                    class="rounded-circle img-center img-fluid shadow shadow-lg--hover mb-2" style="width:200px;height:200px;object-fit:cover;"
-                    v-else>
-                  <template v-if="$store.state.authUser">
-                    <span v-if="['editor', 'admin'].includes($store.state.authUser.role)" class="badge-circle border-0"
-                          :id="`${group.name}${memberIndex}`"
-                          style="transform: translateY(-1000%) translateX(450%) !important;" @click.prevent="editSeiyuu(member, groupIndex, memberIndex)">
-                      <i class="fas fa-edit"></i>
-                    </span>
-                  </template>
-                </lazy-component>
-                <div class="pt-4 text-center">
-                  <h5 class="h3 title">
-                    <span class="d-block mb-1">{{ member.name }}</span>
-                    <small class="h4 font-weight-light text-muted">{{ member.character }}</small>
-                  </h5>
-                  <div class="mt-3">
-                    <el-tooltip content="트위터" placement="bottom" v-if="member.twitter">
-                      <base-button target="_blank" tag="a"
-                                   :href="member.twitter" type="outline-default"
-                                   class="btn-icon-only rounded-circle"><span class="btn-inner--icon"><i class="fab fa-twitter"></i></span></base-button>
-                    </el-tooltip>
-                    <el-tooltip content="인스타그램" placement="bottom" v-if="member.instagram">
-                      <base-button target="_blank" tag="a"
-                                   :href="member.instagram" type="outline-default"
-                                   class="btn-icon-only rounded-circle"><span class="btn-inner--icon"><i class="fab fa-instagram"></i></span></base-button>
-                    </el-tooltip>
-                    <el-tooltip content="블로그" placement="bottom" v-if="member.blog">
-                      <base-button target="_blank" tag="a"
-                                   :href="member.blog" type="outline-default"
-                                   class="btn-icon-only rounded-circle"><span class="btn-inner--icon"><i class="fas fa-blog"></i></span></base-button>
-                    </el-tooltip>
-                    <el-tooltip content="색상코드" placement="bottom" v-if="member.color">
-                      <base-button tag="a" type="outline-default" round icon-only
-                                   class="btn-icon-only rounded-circle text-default"
-                                   v-clipboard:copy="member.color"
-                                   v-clipboard:success="onCopy"
-                                   v-clipboard:error="onError"><span class="btn-inner--icon"><i class="fas fa-palette"></i></span>
-                                   <span class="badge-circle badge-floating border-0" :style="{'background-color':member.color}"
-                                         style="transform: translateY(80%) translateX(-50%) !important; width: 1rem !important; height: 1rem !important;">&nbsp; </span></base-button>
-                    </el-tooltip>
-                  </div>
-                </div>
-              </ul>
+              <draggable v-model="group.members" :group="group.name" @end="dragSave(group)" handle=".handle" :animation="0">
+                <transition-group type="transition" name="flip-list">
+                  <ul class="list-group list-group-flush list d-inline-flex mx-lg-5 my-4 mx-md-5 mx-5" v-for="(member, memberIndex) in group.members" :key="member.name">
+                    <lazy-component :key="member.image">
+                      <img :src="member.image"
+                        class="rounded-circle img-center img-fluid shadow shadow-lg--hover"
+                        style="width:200px;height:200px;object-fit:cover;" v-if="member.image">
+                      <img src="https://dummyimage.com/450x450/bbbbbb/ffffff&text=no+image"
+                        class="rounded-circle img-center img-fluid shadow shadow-lg--hover mb-2" style="width:200px;height:200px;object-fit:cover;"
+                        v-else>
+                      <template v-if="$store.state.authUser">
+                        <span v-if="['editor', 'admin'].includes($store.state.authUser.role)" class="badge-circle border-0"
+                              :id="`${group.name}${memberIndex}`"
+                              style="transform: translateY(-1000%) translateX(450%) !important;" @click.prevent="editSeiyuu(member, groupIndex, memberIndex)">
+                          <i class="fas fa-edit mx-1"></i>
+                          <i class="fas fa-arrows-alt handle mx-1"></i>
+                        </span>
+                      </template>
+                    </lazy-component>
+                    <div class="pt-4 text-center">
+                      <h5 class="h3 title">
+                        <span class="d-block mb-1">{{ member.name }}</span>
+                        <small class="h4 font-weight-light text-muted">{{ member.character }}</small>
+                      </h5>
+                      <div class="mt-3">
+                        <el-tooltip content="트위터" placement="bottom" v-if="member.twitter">
+                          <base-button target="_blank" tag="a"
+                                       :href="member.twitter" type="outline-default"
+                                       class="btn-icon-only rounded-circle"><span class="btn-inner--icon"><i class="fab fa-twitter"></i></span></base-button>
+                        </el-tooltip>
+                        <el-tooltip content="인스타그램" placement="bottom" v-if="member.instagram">
+                          <base-button target="_blank" tag="a"
+                                       :href="member.instagram" type="outline-default"
+                                       class="btn-icon-only rounded-circle"><span class="btn-inner--icon"><i class="fab fa-instagram"></i></span></base-button>
+                        </el-tooltip>
+                        <el-tooltip content="블로그" placement="bottom" v-if="member.blog">
+                          <base-button target="_blank" tag="a"
+                                       :href="member.blog" type="outline-default"
+                                       class="btn-icon-only rounded-circle"><span class="btn-inner--icon"><i class="fas fa-blog"></i></span></base-button>
+                        </el-tooltip>
+                        <el-tooltip content="퍼스널 컬러" placement="bottom" v-if="member.color">
+                          <base-button tag="a" type="outline-default" round icon-only
+                                       class="btn-icon-only rounded-circle text-default"
+                                       v-clipboard:copy="member.color"
+                                       v-clipboard:success="onCopy"
+                                       v-clipboard:error="onError"><span class="btn-inner--icon"><i class="fas fa-palette"></i></span>
+                                       <span class="badge-circle badge-floating border-0" :style="{'background-color':member.color}"
+                                             style="transform: translateY(80%) translateX(-50%) !important; width: 1rem !important; height: 1rem !important;">&nbsp; </span></base-button>
+                        </el-tooltip>
+                      </div>
+                    </div>
+                  </ul>
+                </transition-group>
+              </draggable>
             </template>
           </card>
         </div>
@@ -187,6 +195,7 @@
   import Modal from '~/components/argon-core/Modal.vue'
   import { ColorPicker } from 'element-ui'
   import FileInput from '@/components/argon-core/Inputs/FileInput';
+  import draggable from 'vuedraggable'
   import swal from 'sweetalert2'
   
   export default {
@@ -224,7 +233,8 @@
       RouteBreadCrumb,
       [ColorPicker.name]: ColorPicker,
       Modal,
-      FileInput
+      FileInput,
+      draggable
     },
     data() {
       return {
@@ -262,7 +272,7 @@
         reader.readAsDataURL(files[0])
       },
       onCopy() {
-        this.$notify({type: 'info', message: '해당 맴버의 색상코드를 복사했습니다.', timeout: 3000})
+        this.$notify({type: 'info', message: '색상코드를 복사했습니다.', timeout: 3000})
       },
       onError() {
         this.$notify({type: 'danger', message: '오류가 발생했습니다.', timeout: 3000})
@@ -446,11 +456,44 @@
       async reloadData() {
         this.info = await this.$axios.$get(`/api/seiyuu/special/${this.$route.params.project}`)
       },
+      dragSave(group) {
+        let formData = new FormData()
+        
+        formData.append('data', JSON.stringify(group))
+        this.$axios.$patch(`/api/seiyuu/special/${group._id}`, formData, {headers: {'Content-Type': 'multipart/form-data'}})
+          .then(data => {
+            this.$notify({type: 'success', message: '정보를 성공적으로 업데이트 했습니다.', timeout: 3000})
+            this.reloadData()
+          })
+          .catch(err => {
+            let sentry = this.$sentry.captureException(err)
+            this.$sentry.showReportDialog({
+              eventId: sentry.eventId,
+              title: '오류가 발생했습니다.',
+              subtitle: '어떤 오류가 발생했는지 알려주세요!',
+              subtitle2: '',
+              labelName: '닉네임',
+              labelEmail: '이메일',
+              labelComments: '어떻게 오류가 발생했나요?',
+              labelClose: '닫기',
+              labelSubmit: '보내기',
+              errorGeneric: '오류 보고서를 제출하는 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+              errorFormEntry: '일부 필드에 내용이 작성되어있지 않습니다. 모든 필드를 채워주신 후 다시 시도해주세요.',
+              successMessage: '피드백이 전송되었습니다. 감사합니다!'
+            })
+          })
+      }
     }
   };
 </script>
 <style>
 a.text-default:hover {
   color: #fff !important;
+}
+.flip-list-move {
+  transition: transform 0.5s;
+}
+.no-move {
+  transition: transform 0s;
 }
 </style>

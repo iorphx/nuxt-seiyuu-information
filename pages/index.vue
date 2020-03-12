@@ -16,6 +16,7 @@
     <div class="container-fluid mt--6">
       <div class="row">
         <div class="col-12 col-lg-3">
+          <div class="col px-0">
           <stats-card>
             <!-- Card body -->
             <div class="row">
@@ -30,6 +31,14 @@
                 </div>
             </div>
           </stats-card>
+          </div>
+          <div class="col px-0 mb-3">
+            <Timeline id="iorph_" slug="bandori" sourceType="list" :options="{lang: 'ko', height: 300}"
+              error-message="트위터 위젯 로딩 중 오류가 발생하였습니다." error-message-class="text-center"
+              widget-class="bg-white">
+              <div class="text-center"><img src="/loading.svg"></div>
+            </Timeline>
+          </div>
         </div>
         <div class="col-12 col-lg-9">
           <client-only>
@@ -44,6 +53,7 @@
   // Components
   import BaseHeader from '@/components/argon-core/BaseHeader';
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb';
+  import { Timeline } from 'vue-tweet-embed'
   
   export default {
     head() {
@@ -57,7 +67,8 @@
     },
     components: {
       BaseHeader,
-      RouteBreadCrumb
+      RouteBreadCrumb,
+      Timeline
     },
     data() {
       return {
