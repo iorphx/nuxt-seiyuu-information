@@ -3,12 +3,12 @@
     <base-header class="pb-6" type="">
       <div class="row align-items-center py-4">
         <div class="col-12">
-          <h6 class="h2 d-inline-block mb-0">BanG Dream! 노래방 번호표</h6>
+          <h6 class="h2 d-inline-block mb-0">D4DJ 노래방 번호표</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links">
               <li class="breadcrumb-item"><nuxt-link to="/"><i class="fas fa-home mr-2"></i>홈</nuxt-link></li>
               <li class="breadcrumb-item"><nuxt-link to="/karaoke">노래방</nuxt-link></li>
-              <li class="breadcrumb-item active" aria-current="page">BanG Dream! 노래방 번호표</li>
+              <li class="breadcrumb-item active" aria-current="page">D4DJ 노래방 번호표</li>
             </ol>
           </nav>
         </div>
@@ -21,7 +21,7 @@
           <template slot="header">
             <div class="row">
               <div class="col-auto pb-3 pb-lg-0 my-auto">
-                <h3 class="mb-0">BanG Dream!</h3>
+                <h3 class="mb-0">D4DJ</h3>
               </div>
               <div class="col-lg"></div>
               <div class="col col-lg-auto">
@@ -45,10 +45,8 @@
                       row-key="no"
                       header-row-class-name="thead-light"
                       @sort-change="sortChange"
-                      @filter-change="filterChange"
                       @selection-change="selectionChange">
-              <el-table-column :key="stypeCol.label" :column-key="stypeCol.label" v-bind="stypeCol"></el-table-column>
-              <el-table-column :key="titleCol.label" :column-key="titleCol.label" v-bind="titleCol">
+             <el-table-column :key="titleCol.label" :column-key="titleCol.label" v-bind="titleCol">
                 <template slot-scope="{row}">
                   {{ row.title }}
                   <small class="d-block mt--1" v-if="row.titleKR">{{ row.titleKR }}</small>
@@ -57,13 +55,12 @@
               <el-table-column
                 v-for="column in tableColumns"
                 :key="column.label"
-                :column-key="column.label"
                 v-bind="column"
               >
               </el-table-column>
               <template v-if="this.$store.state.authUser">
                 <el-table-column align="center" v-if="['editor', 'admin'].includes(this.$store.state.authUser.role)">
-                  <template slot-scope="{row}">
+                  <div slot-scope="{row}" class="table-actions">
                     <el-tooltip content="수정" placement="top">
                       <div class="d-inline-flex px-1" @click.prevent="onEdit(row)">
                        <i class="fas fa-edit"></i>
@@ -74,7 +71,7 @@
                         <i class="fas fa-trash"></i>
                       </div>
                     </el-tooltip>
-                  </template>
+                  </div>
                 </el-table-column>
               </template>
             </el-table>
@@ -107,14 +104,6 @@
     
     <modal :show.sync="showModal" modal-classes="modal-secondary">
       <form @submit.prevent="saveSong">
-        <div class="form-group">
-          <base-input label="종류">
-            <el-select v-model="model.stype">
-              <el-option :value="stype.value" :key="stype.label" :label="stype.label" v-for="stype in stypes">
-              </el-option>
-            </el-select>
-          </base-input>
-        </div>
         <base-input label="제목"
                     v-model.lazy="model.title"
                     input-classes="form-control-alternative">
@@ -130,14 +119,6 @@
         </div>
         <base-input label="가수"
                     v-model.lazy="model.singer"
-                    input-classes="form-control-alternative">
-        </base-input>
-        <base-input label="TJ"
-                    v-model.lazy="model.tj"
-                    input-classes="form-control-alternative">
-        </base-input>
-        <base-input label="KY"
-                    v-model.lazy="model.ky"
                     input-classes="form-control-alternative">
         </base-input>
         <base-input label="JOYSOUND"
@@ -158,6 +139,7 @@
         <button type="button" class="btn btn-link ml-auto" @click="showModal = false">닫기</button>
       </template>
     </modal>
+    
   </div>
 </template>
 <script>
@@ -166,26 +148,24 @@
   import { BasePagination } from '@/components/argon-core';
   import BaseHeader from '@/components/argon-core/BaseHeader';
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb';
-  import Modal from '~/components/argon-core/Modal.vue'
   import TagsInput from '@/components/argon-core/Inputs/TagsInput'
   import swal from 'sweetalert2'
   
   export default {
     head () {
       return {
-        title: 'BanG Dream! 노래방 번호표',
+        title: 'D4DJ 노래방 번호표',
         meta: [
-          { name: 'og:title', content: 'BanG Dream! 노래방 번호표', hid: 'og:title', template: chunk => `${chunk} - 부시로드 성우 정보` },
+          { name: 'og:title', content: 'D4DJ 노래방 번호표', hid: 'og:title', template: chunk => `${chunk} - 부시로드 성우 정보` },
           { name: 'og:url', content: `https://bushiroad.seiyuus.com${this.$route.fullPath}`, hid: 'og:url' }
         ]
       }
     },
     components: {
-      Modal,
-      TagsInput,
       BasePagination,
       BaseHeader,
       RouteBreadCrumb,
+      TagsInput,
       [Table.name]: Table,
       [TableColumn.name]: TableColumn,
       [Select.name]: Select,
@@ -193,83 +173,20 @@
     },
     data() {
       return {
+        project: null,
         showModal: false,
-        model: {
-          stype: 'normal',
-          project: 'bandori',
-          title: '',
-          titleKR: '',
-          tags: [],
-          singer: '',
-          tj: '',
-          ky: '',
-          joysound: '',
-          dam: '',
-          uga: ''
-        },
-        stypes: [
-          {value: 'normal', label: "오리지널"},
-          {value: 'anime', label: "커버"}
-        ],
-        stypeCol: {
-          prop: 'stype',
-          label: '종류',
-          minWidth: 110,
-          sortable: true,
-          filters: [
-            {text: '오리지널', value: '오리지널'},
-            {text: '커버', value: '커버'}
-          ],
-          filterMethod: this.filterType
-        },
         titleCol: {
           prop: 'title',
           label: '제목',
-          minWidth: 190,
+          minWidth: 200,
           sortable: true
         },
         tableColumns: [
           {
             prop: 'singer',
             label: '가수',
-            minWidth: 140,
-            sortable: true,
-            filters: [
-              {text: "Poppin'Party", value: "Poppin'Party"},
-              {text: 'Afterglow', value: 'Afterglow'},
-              {text: 'Pastel*Palettes', value: 'Pastel*Palettes'},
-              {text: 'Roselia', value: 'Roselia'},
-              {text: 'ハロー、ハッピーワールド!', value: 'ハロー、ハッピーワールド!'},
-              {text: 'RAISE A SUILEN', value: 'RAISE A SUILEN'},
-              {text: 'Morfonica', value: 'Morfonica'},
-              {text: 'Glitter*Green', value: 'Glitter*Green'},
-              {text: 'GBP!スペシャルバンド', value: 'GBP!スペシャルバンド'},
-              {text: "Poppin'Party×グリグリ", value: "Poppin'Party×グリグリ"},
-              {text: "Poppin'Party×彩×こころ", value: "Poppin'Party×彩×こころ"},
-              {text: 'Roselia×蘭', value: 'Roselia×蘭'},
-              {text: 'ハロハピ×蘭×彩', value: 'ハロハピ×蘭×彩'},
-              {text: '山吹沙綾', value: '山吹沙綾'},
-              {text: '市ヶ谷有咲', value: '市ヶ谷有咲'},
-              {text: '彩×モカ×リサ×花音×つぐみ', value: '彩×モカ×リサ×花音×つぐみ'},
-              {text: '戸山香澄', value: '戸山香澄'},
-              {text: '牛込りみ', value: '牛込りみ'},
-              {text: '花園たえ', value: '花園たえ'},
-              {text: '香澄×Afterglow', value: '香澄×Afterglow'},
-              {text: '香澄×蘭×彩×友希那×こころ', value: '香澄×蘭×彩×友希那×こころ'}
-            ],
-            filterMethod: this.filterHandler
-          },
-          {
-            prop: 'tj',
-            label: 'TJ',
-            minWidth: 90,
-            sortable: false
-          },
-          {
-            prop: 'ky',
-            label: 'KY',
-            minWidth: 90,
-            sortable: false
+            minWidth: 310,
+            sortable: true
           },
           {
             prop: 'joysound',
@@ -292,26 +209,26 @@
         ],
         tableData: [],
         selectedRows: [],
+        searchQuery: '',
+        model: {
+          title: '',
+          titleKR: '',
+          project: 'd4dj',
+          tags: [],
+          singer: '',
+          joysound: '',
+          dam: '',
+          uga: ''
+        },
         pagination: {
           perPage: 25,
           currentPage: 1,
           total: 0
-        },
-        searchQuery: '',
-        filters: {
-          stype: [],
-          singer: []
         }
       }
     },
     async asyncData({$axios}) {
-      let data = await $axios.$get('/api/karaoke/bandori')
-      data.filter(val => {
-        if(val.titleKR === undefined) val.titleKR = ''
-        if(val.tags === undefined) val.tags = []
-        if(val.stype === 'normal') return val.stype = '오리지널'
-        else return val.stype = '커버'
-      })
+      let data = await $axios.$get('/api/karaoke/d4dj')
       return {
         tableData: data
       }
@@ -319,19 +236,6 @@
     methods: {
       selectionChange(selectedRows) {
         this.selectedRows = selectedRows
-      },
-      filterHandler(value, row, column) {
-        const property = column['property'];
-        return row[property] === value
-      },
-      filterType(value, row) {
-        return row.stype === value
-      },
-      filterChange(filters) {
-        if (filters.종류)
-          this.filters.stype = filters.종류
-        if (filters.가수)
-          this.filters.singer = filters.가수
       },
       sortChange({ prop, order }) {
         if (prop) {
@@ -404,8 +308,6 @@
       },
       onEdit(row) {
         this.model = {...row}
-        if (this.model.stype === '오리지널') this.model.stype = 'normal'
-        else this.model.stype = 'anime'
         this.showModal = true
       },
       onDelete(row) {
@@ -453,14 +355,11 @@
       },
       addSongInit() {
         this.model = {
-          stype: 'normal',
-          project: 'bandori',
           title: '',
           titleKR: '',
+          project: 'd4dj',
           tags: [],
           singer: '',
-          tj: '',
-          ky: '',
           joysound: '',
           dam: '',
           uga: ''
@@ -468,14 +367,8 @@
         this.showModal = true
       },
       reloadData() {
-        this.$axios.$get('/api/karaoke/bandori')
+        this.$axios.$get('/api/karaoke/d4dj')
           .then(data => {
-            data.filter(val => {
-              if(val.titleKR === undefined) val.titleKR = ''
-              if(val.tags === undefined) val.tags = []
-              if(val.stype === 'normal') return val.stype = '오리지널'
-              else return val.stype = '커버'
-            })
             this.tableData = data
           })
           .catch(err => {
@@ -508,18 +401,7 @@
                   data.titleKR.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                   data.tags.join().toLowerCase().includes(this.searchQuery.toLowerCase()))
         })
-        if (!this.filters.stype.length && !this.filters.singer.length)
-          return result
-        if (this.filters.stype.length && !this.filters.singer.length)
-          return result
-            .filter(row => this.filters.stype.includes(row.stype))
-        if (!this.filters.stype.length && this.filters.singer.length)
-          return result
-            .filter(row => this.filters.singer.includes(row.singer))
-        if (this.filters.stype.length && this.filters.singer.length)
-          return result
-            .filter(row => this.filters.singer.includes(row.singer))
-            .filter(row => this.filters.stype.includes(row.stype))
+        return result
       }
     }
   }

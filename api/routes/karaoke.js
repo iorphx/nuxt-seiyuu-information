@@ -5,7 +5,7 @@ import { KaraokeSpecial } from '../models'
 import role from '../middleware/role'
 
 router.get('/karaoke/:project', (req, res, next) => {
-  KaraokeSpecial.find({project: req.params.project}, (err, data) => {
+  KaraokeSpecial.find({project: req.params.project}, {}, {sort: 'title singer'}, (err, data) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(data)
   })

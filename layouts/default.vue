@@ -54,7 +54,7 @@
           <sidebar-item :link="{ name: '노래방 번호표' }">
             <sidebar-item :link="{ name: 'BanG Dream!', path:'/karaoke/sp/bandori' }"/>
             <sidebar-item :link="{ name: '레뷰 스타라이트', path:'/karaoke/sp/revue' }"/>
-            <!--<sidebar-item :link="{ name: 'D4DJ', path:'/karaoke/sp/d4dj' }"/>-->
+            <sidebar-item :link="{ name: 'D4DJ', path:'/karaoke/sp/d4dj' }"/>
           </sidebar-item>
         </sidebar-item>
         

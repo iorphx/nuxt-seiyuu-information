@@ -5,14 +5,14 @@ import { Translation } from '../models'
 import role from '../middleware/role'
 
 router.get('/translation/list', (req, res, next) => {
-  Translation.find({}, (err, info) => {
+  Translation.find({}, {}, {sort: 'date'}, (err, info) => {
     if (err) res.status(500).json(err)
     else res.status(200).json(info)
   })
 })
 
 router.get('/translation/list/:project', (req, res, next) => {
-  Translation.find({project: req.params.project}, {sort: 'date'}, (err, info) => {
+  Translation.find({project: req.params.project}, {}, {sort: 'date'}, (err, info) => {
     if (err) res.status(500).json(err)
     else res.status(200).json(info)
   })

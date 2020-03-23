@@ -20,14 +20,14 @@ const storageSong = multer.diskStorage({
 const SongUpload = multer({ storage: storageSong })
 
 router.get('/discography/list' , (req, res, next) => {
-  Discography.find({}, {_id: 0, lyric: 0, lyricist: 0, composer: 0, arrange: 0, release: 0}, {sort: 'artist'}, (err, info) => {
+  Discography.find({}, {_id: 0, lyric: 0, lyricist: 0, composer: 0, arrange: 0, release: 0}, {sort: 'artist title'}, (err, info) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(info)
   })
 })
 
 router.get('/discography/list/:project' , (req, res, next) => {
-  Discography.find({project: req.params.project}, {_id: 0, lyric: 0, lyricist: 0, composer: 0, arrange: 0, release: 0}, {sort: 'artist'}, (err, info) => {
+  Discography.find({project: req.params.project}, {_id: 0, lyric: 0, lyricist: 0, composer: 0, arrange: 0, release: 0}, {sort: 'artist title'}, (err, info) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(info)
   })

@@ -31,7 +31,7 @@ const SeiyuuUpload = multer({ storage: storageSeiyuu })
 const SeiyuuUploadSpecial = multer({ storage: storageSeiyuuSpecial })
 
 router.get('/seiyuu/list' , (req, res, next) => {
-  Seiyuu.find({}, {_id: 0, birthday: 0, constellation: 0, blood: 0, height: 0, hobbies: 0, specialty: 0, agent: 0, born: 0, links: 0, activities: 0}, (err, info) => {
+  Seiyuu.find({}, {_id: 0, birthday: 0, constellation: 0, blood: 0, height: 0, hobbies: 0, specialty: 0, agent: 0, born: 0, links: 0, activities: 0}, {sort: 'name'}, (err, info) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(info)
   })

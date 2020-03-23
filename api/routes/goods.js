@@ -20,14 +20,14 @@ const storageGoods = multer.diskStorage({
 const GoodsUpload = multer({ storage: storageGoods })
 
 router.get('/goods/list', (req, res, next) => {
-  Goods.find({}, {_id: 0, description: 0, type: 0, release: 0, link: 0, src: 0}, (err, info) => {
+  Goods.find({}, {_id: 0, description: 0, type: 0, release: 0, link: 0, src: 0}, {sort: 'name'}, (err, info) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(info)
   })
 })
 
 router.get('/goods/list/:project', (req, res, next) => {
-   Goods.find({project: req.params.project}, {_id: 0, description: 0, type: 0, release: 0, link: 0}, (err, info) => {
+   Goods.find({project: req.params.project}, {_id: 0, description: 0, type: 0, release: 0, link: 0}, {sort: 'name'}, (err, info) => {
     if (err) return res.status(500).json(err)
     res.status(200).json(info)
   })

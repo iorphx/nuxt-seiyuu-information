@@ -101,6 +101,8 @@ module.exports = {
       '/forgot',
       '/reset',
       '/admin/**',
+      '/admin',
+      '**/edit',
       '**/edit/**',
       '/-maps/**',
       '/-pages/**'
@@ -114,10 +116,10 @@ module.exports = {
       const translations = await axios.get('https://bushiroad.seiyuus.com/api/translation/list')
 
       routes = [
-        ...discographies.data.map(discography => `/discographies/${discography.title}`),
-        ...goods.data.map(good => `/goods/${good.name}`),
-        ...seiyuus.data.map(seiyuu => `/seiyuu/${seiyuu.name}`),
-        ...translations.data.map(translation => `/translation/${translation.title}`),
+        ...discographies.data.map(discography => `/discographies/${encodeURIComponent(discography.title)}`),
+        ...goods.data.map(good => `/goods/${encodeURIComponent(good.name)}`),
+        ...seiyuus.data.map(seiyuu => `/seiyuu/${encodeURIComponent(seiyuu.name)}`),
+        ...translations.data.map(translation => `/translation/${encodeURIComponent(translation.title)}`),
         '/karaoke/release/tj', '/karaoke/release/kumyoung', '/karaoke/release/joysound', '/karaoke/release/dam', '/karaoke/release/uga',
         '/seiyuu/sp/bandori', '/seiyuu/sp/revue', '/seiyuu/sp/d4dj', '/seiyuu/sp/rebirth', '/seiyuu/sp/assaultlily'
       ]
