@@ -15,7 +15,7 @@ const GoodsSchema = new Schema(
     description: String,
     goodsType: String,
     price: String,
-    release: String,
+    release: Date,
     image: String,
     link: String,
     tags: Array

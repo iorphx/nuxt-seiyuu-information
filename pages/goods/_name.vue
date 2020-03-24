@@ -51,6 +51,7 @@
                         <small>{{info.value}}</small>
                       </h1>
                     </a>
+                    <h1 class="display-4" v-else-if="!info.value"><small>정보 없음</small></h1>
                     <h1 class="display-4" v-else><small>{{info.value}}</small></h1>
                   </div>
                 </div>
@@ -76,6 +77,8 @@
       let name = encodeURIComponent(params.name)
       return $axios.$get(`/api/goods/${name}`)
         .then(data => {
+          let releaseDate = new Date(data.release)
+          if (data.release) data.release = releaseDate.toLocaleDateString('ko-KR', {year:'numeric', month: 'long', day: 'numeric'})
           let goodsInfo = [
             {header: '발매일', value: data.release},
             {header: '가격', value: data.price},

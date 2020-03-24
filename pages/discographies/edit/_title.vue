@@ -8,6 +8,7 @@
             <ol class="breadcrumb breadcrumb-links">
               <li class="breadcrumb-item"><nuxt-link to="/"><i class="fas fa-home mr-2"></i>홈</nuxt-link></li>
               <li class="breadcrumb-item"><nuxt-link to="/discographies">가사/콜</nuxt-link></li>
+              <li class="breadcrumb-item"><nuxt-link :to="`/discographies/${project.value}`">{{project.label}} 가사/콜</nuxt-link></li>
               <li class="breadcrumb-item active" aria-current="page">가사/콜 수정</li>
             </ol>
           </nav>
@@ -56,15 +57,16 @@
                     <base-input alternative label="작사" v-model="song.lyricist"></base-input>
                     <base-input alternative label="작곡" v-model="song.composer"></base-input>
                     <base-input alternative label="편곡" v-model="song.arrange"></base-input>
-                    <base-input alternative label="출시일">
-                      <flat-picker slot-scope="{focus, blur}"
-                        @on-open="focus"
-                        @on-close="blur"
-                        :config="flatpickrConfig"
-                        class="form-control datepicker"
-                        v-model="song.release">
-                      </flat-picker>
-                    </base-input>
+                    <span>
+                      <div class="form-group">
+                        <label class="form-control-label">출시일</label>
+                        <el-date-picker
+                          type="date"
+                          class="input-group-alternative w-100"
+                          v-model="song.release">
+                        </el-date-picker>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -129,13 +131,11 @@
   // Components
   import BaseHeader from '@/components/argon-core/BaseHeader';
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb';
-  import { Select, Option } from 'element-ui';
+  import { Select, Option, DatePicker } from 'element-ui';
   import FileInput from '@/components/argon-core/Inputs/FileInput';
   import TagsInput from '@/components/argon-core/Inputs/TagsInput'
   import Modal from '@/components/argon-core/Modal.vue';
   import tinymceMixin from '~/components/mixins/tinymceMixin'
-  import flatPicker from "vue-flatpickr-component"
-  import { Korean } from "flatpickr/dist/l10n/ko.js"
   
   export default {
     mixins: [tinymceMixin],
@@ -148,7 +148,7 @@
       Modal,
       [Select.name]: Select,
       [Option.name]: Option,
-      flatPicker
+      [DatePicker.name]: DatePicker
     },
     data() {
       return {
@@ -178,8 +178,7 @@
         imgPreview: null,
         modals: {
           linkHelp: false
-        },
-        flatpickrConfig: {allowInput: true, locale: Korean}
+        }
       }
     },
     methods: {
@@ -220,19 +219,29 @@
           })
       }
     },
-    mounted() {
-      this.$axios.$get(`/api/discography/${encodeURIComponent(this.$route.params.title)}`)
+    asyncData ({ params, $axios, $sentry }) {
+      return $axios.$get(`/api/discography/${encodeURIComponent(params.title)}`)
         .then(data => {
-          this.song = data
+          let projects = [
+            {label: 'BanG Dream!', value: 'bandori'},
+            {label: '레뷰 스타라이트', value: 'revue'},
+            {label: 'D4DJ', value: 'd4dj'},
+            {label: 'Re버스 for you', value: 'rebirth'},
+            {label: "어썰트 릴리", value: 'assaultlily'}
+          ]
+          let project = projects.filter(project => project.value === data.project)
+          return {
+            song: data,
+            project: project[0]
+          }
         })
         .catch(err => {
-          this.$sentry.captureException(err)
+          $sentry.captureException(err)
         })
     }
   };
 </script>
 <style>
-  @import "flatpickr/dist/flatpickr.css";
 
   p {
     font-size: inherit;

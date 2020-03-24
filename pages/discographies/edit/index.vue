@@ -8,6 +8,7 @@
             <ol class="breadcrumb breadcrumb-links">
               <li class="breadcrumb-item"><nuxt-link to="/"><i class="fas fa-home mr-2"></i>홈</nuxt-link></li>
               <li class="breadcrumb-item"><nuxt-link to="/discographies">가사/콜</nuxt-link></li>
+              <li v-if="project" class="breadcrumb-item"><nuxt-link :to="`/discographies/${project.value}`">{{project.label}} 가사/콜</nuxt-link></li>
               <li class="breadcrumb-item active" aria-current="page">가사/콜 추가</li>
             </ol>
           </nav>
@@ -53,15 +54,16 @@
                     <base-input alternative label="작사" v-model="song.lyricist"></base-input>
                     <base-input alternative label="작곡" v-model="song.composer"></base-input>
                     <base-input alternative label="편곡" v-model="song.arrange"></base-input>
-                    <base-input alternative label="출시일">
-                      <flat-picker slot-scope="{focus, blur}"
-                        @on-open="focus"
-                        @on-close="blur"
-                        :config="flatpickrConfig"
-                        class="form-control datepicker"
-                        v-model="song.release">
-                      </flat-picker>
-                    </base-input>
+                    <span>
+                      <div class="form-group">
+                        <label class="form-control-label">출시일</label>
+                        <el-date-picker
+                          type="date"
+                          class="input-group-alternative w-100"
+                          v-model="song.release">
+                        </el-date-picker>
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -125,13 +127,11 @@
 <script>
   import BaseHeader from '@/components/argon-core/BaseHeader';
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb';
-  import { Select, Option } from 'element-ui';
+  import { Select, Option, DatePicker } from 'element-ui';
   import FileInput from '@/components/argon-core/Inputs/FileInput';
   import TagsInput from '@/components/argon-core/Inputs/TagsInput'
   import Modal from '@/components/argon-core/Modal.vue';
   import tinymceMixin from '~/components/mixins/tinymceMixin'
-  import flatPicker from "vue-flatpickr-component"
-  import { Korean } from "flatpickr/dist/l10n/ko.js"
   
   export default {
     mixins: [tinymceMixin],
@@ -144,7 +144,7 @@
       Modal,
       [Select.name]: Select,
       [Option.name]: Option,
-      flatPicker
+      [DatePicker.name]: DatePicker
     },
     data() {
       return {
@@ -170,12 +170,12 @@
           {value: 'assaultlily', label: "어썰트 릴리"},
           {value: 'other', label: "기타"}
         ],
+        project: '',
         file: null,
         imgPreview: null,
         modals: {
           linkHelp: false
-        },
-        flatpickrConfig: {allowInput: true, locale: Korean}
+        }
       }
     },
     methods: {
@@ -214,12 +214,20 @@
               successMessage: '피드백이 전송되었습니다. 감사합니다!'
             })
           })
+      },
+    },
+    mounted() {
+      if (this.$route.query.project) {
+        let project = this.projects.filter(project => project.value === this.$route.query.project)
+        this.project = project[0]
       }
     }
   };
 </script>
 <style>
-  @import "flatpickr/dist/flatpickr.css";
+  .el-input__inner {
+    border: 0 !important;
+  }
   
   a.text-default:hover {
     color: #fff !important;

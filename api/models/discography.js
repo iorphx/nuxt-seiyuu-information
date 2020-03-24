@@ -16,7 +16,7 @@ const DiscographySchema = new Schema(
     lyricist: String,
     composer: String,
     arrange: String,
-    release: String,
+    release: Date,
     image: String,
     music: String,
     lyric: String,

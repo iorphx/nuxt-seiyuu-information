@@ -9,7 +9,7 @@ const SeiyuuSchema = new Schema(
     },
     japaneseName: String,
     englishPr: String,
-    birthday: String,
+    birthday: Date,
     constellation: String,
     blood: String,
     height: String,

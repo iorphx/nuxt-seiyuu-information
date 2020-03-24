@@ -45,15 +45,16 @@
               <div class="col">
                 <div class="row card-profile-stats d-flex justify-content-center">
                   <div class="col-6 col-lg-3 mx-0">
-                    <base-input alternative label="생일">
-                      <flat-picker slot-scope="{focus, blur}"
-                        @on-open="focus"
-                        @on-close="blur"
-                        :config="flatpickrConfig"
-                        class="form-control datepicker"
-                        v-model="seiyuu.birthday">
-                      </flat-picker>
-                    </base-input>
+                    <span>
+                      <div class="form-group">
+                        <label class="form-control-label">생일</label>
+                        <el-date-picker
+                          type="date"
+                          class="w-100"
+                          v-model="seiyuu.birthday">
+                        </el-date-picker>
+                      </div>
+                    </span>
                   </div>
                   <div class="col-6 col-lg-3 mx-0">
                     <base-input alternative label="별자리" v-model="seiyuu.constellation"></base-input>
@@ -151,8 +152,7 @@
   import BaseHeader from '@/components/argon-core/BaseHeader';
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb';
   import FileInput from '@/components/argon-core/Inputs/FileInput';
-  import flatPicker from "vue-flatpickr-component"
-  import { Korean } from "flatpickr/dist/l10n/ko.js"
+  import { DatePicker } from 'element-ui';
   
   export default {
     middleware: 'editor',
@@ -160,7 +160,7 @@
       BaseHeader,
       RouteBreadCrumb,
       FileInput,
-      flatPicker
+      [DatePicker.name]: DatePicker
     },
     data() {
       return {
@@ -182,8 +182,7 @@
           activities: [{title: '', contents: [{value: ''}]}]
         },
         file: null,
-        imgPreview : null,
-        flatpickrConfig: {allowInput: true, locale: Korean}
+        imgPreview : null
       }
     },
     methods: {
@@ -245,5 +244,7 @@
   }
 </script>
 <style>
-  @import "flatpickr/dist/flatpickr.css";
+  .el-date-editor input.el-input__inner {
+    height: calc(1.5em + 1.25rem + 5px) !important;
+  }
 </style>

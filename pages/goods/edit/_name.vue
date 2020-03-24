@@ -8,6 +8,7 @@
             <ol class="breadcrumb breadcrumb-links">
               <li class="breadcrumb-item"><nuxt-link to="/"><i class="fas fa-home mr-2"></i>홈</nuxt-link></li>
               <li class="breadcrumb-item"><nuxt-link to="/goods">굿즈</nuxt-link></li>
+              <li class="breadcrumb-item"><nuxt-link :to="`/goods/${project.value}`">{{project.label}} 굿즈</nuxt-link></li>
               <li class="breadcrumb-item active" aria-current="page">굿즈 정보 수정</li>
             </ol>
           </nav>
@@ -35,15 +36,16 @@
               <div class="col-lg-7 col-md-12 my-auto">
                 <base-input alternative label="이름" v-model="goods.name" :rules="{required: true}" name="이름"></base-input>
                 <base-input alternative label="이름 (일본어)" v-model="goods.nameJP"></base-input>
-                <base-input alternative label="발매일">
-                  <flat-picker slot-scope="{focus, blur}"
-                    @on-open="focus"
-                    @on-close="blur"
-                    :config="flatpickrConfig"
-                    class="form-control datepicker"
-                    v-model="goods.release">
-                  </flat-picker>
-                </base-input>
+                <span>
+                  <div class="form-group">
+                    <label class="form-control-label">발매일</label>
+                    <el-date-picker
+                      type="date"
+                      class="w-100"
+                      v-model="goods.release">
+                    </el-date-picker>
+                  </div>
+                </span>
                 <base-input alternative label="가격" v-model="goods.price"></base-input>
                 <base-input alternative label="종류" v-model="goods.goodsType"></base-input>
                 <base-input alternative label="링크" v-model="goods.link"></base-input>
@@ -83,12 +85,10 @@
 <script>
   import BaseHeader from '@/components/argon-core/BaseHeader';
   import RouteBreadCrumb from '@/components/argon-core/Breadcrumb/RouteBreadcrumb';
-  import { Select, Option } from 'element-ui';
+  import { Select, Option, DatePicker } from 'element-ui';
   import FileInput from '@/components/argon-core/Inputs/FileInput';
   import TagsInput from '@/components/argon-core/Inputs/TagsInput'
   import tinymceMixin from '~/components/mixins/tinymceMixin'
-  import flatPicker from "vue-flatpickr-component"
-  import { Korean } from "flatpickr/dist/l10n/ko.js"
   
   export default {
     mixins: [tinymceMixin],
@@ -100,7 +100,7 @@
       TagsInput,
       [Select.name]: Select,
       [Option.name]: Option,
-      flatPicker
+      [DatePicker.name]: DatePicker
     },
     data() {
       return {
@@ -124,8 +124,7 @@
           {value: 'other', label: "기타"}
         ],
         file: null,
-        imgPreview: null,
-        flatpickrConfig: {allowInput: true, locale: Korean}
+        imgPreview: null
       }
     },
     methods: {
@@ -166,20 +165,33 @@
           })
       }
     },
-    mounted () {
-      this.$axios.$get(`/api/goods/${encodeURIComponent(this.$route.params.name)}`)
+    asyncData ({ params, $axios, $sentry }) {
+      return $axios.$get(`/api/goods/${encodeURIComponent(params.name)}`)
         .then(data => {
-          this.goods = data
+          let projects = [
+            {label: 'BanG Dream!', value: 'bandori'},
+            {label: '레뷰 스타라이트', value: 'revue'},
+            {label: 'D4DJ', value: 'd4dj'},
+            {label: 'Re버스 for you', value: 'rebirth'},
+            {label: "어썰트 릴리", value: 'assaultlily'}
+          ]
+          let project = projects.filter(project => project.value === data.project)
+          return {
+            goods: data,
+            project: project[0]
+          }
         })
         .catch(err => {
-          this.$sentry.captureException(err)
+          $sentry.captureException(err)
         })
     }
   }
 </script>
 <style>
-  @import "flatpickr/dist/flatpickr.css";
-
+  .el-date-editor input.el-input__inner {
+    height: calc(1.5em + 1.25rem + 5px) !important;
+  }
+  
   a.text-default:hover {
     color: #fff !important;
   }

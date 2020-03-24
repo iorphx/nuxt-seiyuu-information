@@ -39,12 +39,14 @@
                 <span class="text-muted display-4">{{info.titleKR}}</span>
                 <hr class="my-3">
                 <div class="row" v-for="data in songInfo">
-                  <div class="col-4">
-                    <h1 class="display-4">{{data.header}}</h1>
-                  </div>
-                  <div class="col-8">
-                    <h1 class="display-4"><small>{{data.data}}</small></h1>
-                  </div>
+                  <template v-if="data.data">
+                    <div class="col-4">
+                      <h1 class="display-4">{{data.header}}</h1>
+                    </div>
+                    <div class="col-8">
+                      <h1 class="display-4"><small>{{data.data}}</small></h1>
+                    </div>
+                  </template>
                 </div>
               </div>
             </div>
@@ -115,6 +117,8 @@
       let title = encodeURIComponent(params.title)
       return $axios.$get(`/api/discography/${title}`)
         .then(data => {
+          let releaseDate = new Date(data.release)
+          if (data.release) data.release = releaseDate.toLocaleDateString('ko-KR', {year:'numeric', month: 'long', day: 'numeric'})
           return {
             info: data,
             songInfo: [
