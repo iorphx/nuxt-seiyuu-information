@@ -24,7 +24,7 @@
     "@tinymce/tinymce-vue": "^3.2.0",
     "async": "^3.2.0",
     "axios": "^0.19.2",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "bootstrap": "4.3.1",
     "chart.js": "^2.9.3",
     "connect-mongo": "^3.2.0",
